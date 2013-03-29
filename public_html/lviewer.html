@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Three.js -- Template</title>
+	<title>LSystem.js</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
@@ -20,13 +20,14 @@
 
 <!-- <div id="message"></div> -->
 
-<script src="js/three.min.js"></script>
-<script src="js/Detector.js"></script>
-<script src="js/stats.min.js"></script>
-<script src="js/TrackballControls.js"></script>
-<script src="js/THREEx.KeyboardState.js"></script>
-<script src="js/THREEx.FullScreen.js"></script>
-<script src="js/THREEx.WindowResize.js"></script>
+<script src="js/lib/three.min.js"></script>
+<script src="js/lib/Detector.js"></script>
+<script src="js/lib/stats.min.js"></script>
+<script src="js/lib/TrackballControls.js"></script>
+<script src="js/lib/THREEx.KeyboardState.js"></script>
+<script src="js/lib/THREEx.FullScreen.js"></script>
+<script src="js/lib/THREEx.WindowResize.js"></script>
+<script src="js/elly.js"></script>
 
 <script>
 // standard global variables
@@ -44,6 +45,13 @@ window.onload = function() {
 // FUNCTIONS 		
 function init() 
 {
+        escn = new ELLY.System();
+        escn.rule("R1", "this.R2()");
+        escn.rule("R2", "this.R1()");
+        escn.evalRule("R1");
+    
+    
+    
 	// SCENE
 	scene = new THREE.Scene();
 
