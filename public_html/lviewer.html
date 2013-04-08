@@ -45,10 +45,6 @@ window.onload = function() {
 // FUNCTIONS 		
 function init() 
 {
-        escn = new ELLY.System();
-        escn.rule("R1", "this.R2()");
-        escn.rule("R2", "this.R1()");
-        escn.evalRule("R1");
     
     	// SCENE
 	scene = new THREE.Scene();
@@ -101,10 +97,11 @@ function init()
 	cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
 //	cube.position.set(0,26,0);
 	scene.add(cube);
-	
 
-        
-        
+        escn = new ELLY.System(scene);
+        escn.rule("R1", "this.cube().m(1.0).s(0.9).R1()");
+        escn.rule("R2", "this.R1()");
+        escn.evalRule("R1");
 }
 
 function animate() 

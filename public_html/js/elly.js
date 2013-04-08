@@ -36,15 +36,20 @@ ELLY.State.prototype.clone = function() {
     return new ELLY.State();
 }
 
-ELLY.System = function(maxDepth) {
+
+
+
+
+ELLY.System = function(scene, maxDepth) {
+    this.scene = scene;
+    
     this.backlog = [];
     this.backlogBuild = [];
     
-    
     this.maxDepth = maxDepth || 5;
+    this.depth = 0;
     
     this.state = new ELLY.State();
-    this.currentState = new ELLY.State(); 
 };
 
 ELLY.System.prototype.rule = function(name, code) {
@@ -54,20 +59,23 @@ ELLY.System.prototype.rule = function(name, code) {
             new Function(code).call(this);
             this.state = saveState;
         } else if (this.depth < this.maxDepth) {
-            this.backlogBuild.push(name);
+            this.backlogBuild.push([name, this.state]);
         }
+        return this;            // method chain
     };
 };
 
 ELLY.System.prototype.evalRule = function(name) {
-    this.backlog.push(name);
+    this.backlog.push([name, this.state]);
     
     this.depth = 0;
     while (this.backlog.length > 0) {
         console.debug("[ITERATION] D: "+this.depth + " Size: " + this.backlog.length);
         while(this.backlog.length > 0) {
             console.debug("[RULE] " + this.backlog[0] + ":" + this.depth);
-            this[this.backlog.shift()].call(this, true);
+            var entry = this.backlog.shift();
+            this.state = entry[1];
+            this[entry[0]].call(this, true);
         }
         this.depth++;
         this.backlog = this.backlogBuild;
@@ -75,6 +83,26 @@ ELLY.System.prototype.evalRule = function(name) {
     }
 };
 
+ELLY.System.prototype.m = ELLY.System.prototype.move = function(amount) {
+   // TODO 
+    return this;
+}
 
+ELLY.System.prototype.s = ELLY.System.prototype.scale = function(amount) {
+   // TODO 
+    return this;
+}
 
-
+var xxx = 0;
+ELLY.System.prototype.cube = function(amount) {
+    xxx += 2;
+    var cubeGeometry = new THREE.CubeGeometry( 1, 1, 1 );
+    var cubeMaterial = new THREE.MeshPhongMaterial( { color: 0xcccccc } );
+    
+    var cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+    cube.position.set(-0.5+xxx,-0.5,-0.5);
+    this.scene.add(cube);
+    
+    return this;
+   // TODO 
+}
