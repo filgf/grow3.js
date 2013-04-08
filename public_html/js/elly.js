@@ -34,8 +34,8 @@ ELLY.State = function(o) {
         this.direction = new THREE.Vector3(1, 0, 0);
         this.scale = 1.0;
     } else {
-        this.position = o.position;
-        this.direction = o.direction;
+        this.position = o.position.clone();
+        this.direction = o.direction.clone();
         this.scale = o.scale;
     }
 };

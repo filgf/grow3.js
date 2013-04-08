@@ -100,8 +100,9 @@ function init()
 
         escn = new ELLY.System(scene);
         escn.rule("R1", "this.cube().m(1.0).s(0.9).R1()");
-        escn.rule("R2", "this.R1()");
-        escn.evalRule("R1");
+        escn.rule("R2", "this.cube().m(-1.0).s(0.9).R2()");
+        escn.rule("R3", "this.R1().R2()")
+        escn.evalRule("R3");
 }
 
 function animate() 
