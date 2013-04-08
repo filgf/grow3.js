@@ -34,30 +34,27 @@ ELLY.State = function() {
 
 ELLY.State.prototype.clone = function() {
     return new ELLY.State();
-};
-
-
+}
 
 ELLY.System = function(maxDepth) {
     this.backlog = [];
+    this.backlogBuild = [];
     
-    this.maxDepth = maxDepth || 20;
     
-    this.states = [];
+    this.maxDepth = maxDepth || 5;
+    
+    this.state = new ELLY.State();
     this.currentState = new ELLY.State(); 
 };
 
 ELLY.System.prototype.rule = function(name, code) {
-    
-    
     this[name] = function(isRoot) { 
         if (isRoot === true) {
-            this.states.push(this.currentState);
-            this.currentState = this.currentState.clone();
+            saveState = this.state.clone();
             new Function(code).call(this);
-            this.currentState = this.states.pop();
-        } else if (this.states.length < this.maxDepth - 1) {
-            this.backlog.push(name);
+            this.state = saveState;
+        } else if (this.depth < this.maxDepth) {
+            this.backlogBuild.push(name);
         }
     };
 };
@@ -65,10 +62,16 @@ ELLY.System.prototype.rule = function(name, code) {
 ELLY.System.prototype.evalRule = function(name) {
     this.backlog.push(name);
     
-    while(this.backlog.length > 0) {
-        console.debug("[RULE] " + this.backlog[0] + ":" + this.states.length);
-        this[this.backlog.shift()].call(this, true);
-        
+    this.depth = 0;
+    while (this.backlog.length > 0) {
+        console.debug("[ITERATION] D: "+this.depth + " Size: " + this.backlog.length);
+        while(this.backlog.length > 0) {
+            console.debug("[RULE] " + this.backlog[0] + ":" + this.depth);
+            this[this.backlog.shift()].call(this, true);
+        }
+        this.depth++;
+        this.backlog = this.backlogBuild;
+        this.backlogBuild = [];
     }
 };
 
