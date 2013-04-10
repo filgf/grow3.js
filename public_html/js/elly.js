@@ -35,6 +35,7 @@ ELLY.System.prototype = {
      
     
     rule : function(name, code) {
+        
         this[name] = function(transforms, isRoot) {
             if (isRoot === true) {
                 saveState = this.state;
@@ -42,7 +43,7 @@ ELLY.System.prototype = {
                 saveState.objectProto.add(this.state.objectProto);
                 
                 this.evalTransforms(transforms);
-                if (code instanceof String) {
+                if (typeof code == 'string' || code instanceof String) {
                     new Function(code).call(this);
                 } else {
                     code.call(this);
@@ -109,7 +110,9 @@ ELLY.System.prototype = {
     /*
      * Draw cube
      */
-    cube : rule(function() {
+};
+
+ELLY.System.prototype.rule("cube", function() {
         var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
         var cubeMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
@@ -118,10 +121,7 @@ ELLY.System.prototype = {
         this.state.objectProto.parent.add(cube);
 
 //        return this;
-    })
-};
-
-ELLY.System.prototype.cube = //TODO
+    });
 
 
 /*
