@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>LSystem.js</title>
+	<title>ELLY.js test</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
@@ -98,11 +98,11 @@ function init()
 //	cube.position.set(0,26,0);
 //	scene.add(cube);
 
-        escn = new ELLY.System(scene);
-        escn.rule("R1", "this.cube().m(1.0).s(0.9).R1()");
-        escn.rule("R2", "this.cube().m(-1.0).s(0.9).R2()");
+        escn = new ELLY.System(scene, 12);
+        escn.rule("R1", "this.cube({s:1.1}); this.R1({m : 1.0, s : 0.9});");
+        escn.rule("R2", "this.cube().R2({m : -1.0, s : 0.9})");
         escn.rule("R3", "this.R1().R2()")
-        escn.evalRule("R3");
+        escn.trigger("R3");
 }
 
 function animate() 

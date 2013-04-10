@@ -1,0 +1,38 @@
+// PEG.js grammar for ELLY
+
+start
+  = rule* sep*
+
+rule
+  = "rule" sep+ name:identifier sep* "{"  actions "}"
+
+actions
+  = action* { /* todo */ }
+
+action
+  = sep* transformations? sep* ruleCall sep*
+
+transformations
+  = "{" transformation* "}"
+
+
+transformation
+  = sep* transformationType:identifier sep+ value+ sep*
+
+value
+  = v:real sep*
+
+
+ruleCall
+  = name:identifier
+
+
+
+identifier
+  = digits:[a-zA-z][a-zA-z0-9]* { /* return digits.join(""); */ }
+
+real "real number"
+  = digits:[0-9]+("."[0-9]+)? { /* Console.log(digits); return parseFloat(digits); */ }
+
+sep
+  = [' '\t\r\n]
