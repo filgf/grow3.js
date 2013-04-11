@@ -92,12 +92,18 @@ ELLY.System.prototype = {
      * Move forward (scale sensitive)
      */
     move : function(amount) {
-        this.state.objectProto.position.z += amount;
+        this.state.objectProto.position.x += amount;
         return this;
     },
     
-    // turn roll yaw
-       
+    // pitch roll yaw
+    pitch : function(angle) {
+        axis = this.state.objectProto.up.clone().cross(this.state.objectProto)
+        
+        this.state.objectProto.rotateOnAxis(axis, angle)
+    },
+    
+    
     
     /*
      * Change scale by factor amount
