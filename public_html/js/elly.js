@@ -5,18 +5,13 @@ ELLY.State = function() {
     
 };
 
-ELLY.State.prototype = {
-   constructor : ELLY.State 
-};
-
-
 
 ELLY.System = (function() {
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
     var cubeMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
     
-    var m =  function(scene, maxDepth) {
+    var system = function(scene, maxDepth) {
         this.scene = scene;
 
         this.backlog = [];
@@ -28,36 +23,39 @@ ELLY.System = (function() {
         this.state = new ELLY.State();
         this.scene.add(this.state.objectProto);
     }
+
+    system.prototype.constructor = system;
     
-    m.prototype.constructor = m;
+    var that = this;
+
     
-    m.prototype.rule = function(name, code) {
-        
-        this[name] = function(transforms, isRoot) {
+    var rulify = function (code) {
+       currentF = function(transforms, isRoot) {
             if (isRoot === true) {
                 saveState = this.state;
                 this.state = new ELLY.State();
                 saveState.objectProto.add(this.state.objectProto);
-                
                 this.evalTransforms(transforms);
-                if (typeof code == 'string' || code instanceof String) {
-                    new Function(code).call(this);
-                } else {
-                    code.call(this);
-                }
+                code.call(this);
                 this.state = saveState;
             } else if (this.depth < this.maxDepth) {
-                this.backlogBuild.push([name, transforms, this.state]);
+                this.backlogBuild.push([currentF, transforms, this.state]);
             }
             return this;            // method chain
         };
+        
+        return currentF;
+    };
+    
+    system.prototype.rule = function(name, code) {
+        that[name] = this[name] = rulify(code);
     };
     
    
-    m.prototype.evalTransforms = function(transforms) {
+    system.prototype.evalTransforms = function(transforms) {
         for(t in transforms) {
-            if (t in this) {
-                this[t].call(this, transforms[t]);
+            if (t in that) {
+                that[t].call(this, transforms[t]);
             } else {
                 console.warn("Skipping unknown transform \"" + t +"\".")
             }
@@ -68,18 +66,19 @@ ELLY.System = (function() {
     /*
      * Start evaluation with rule "name"
      */
-    m.prototype.trigger = function(name) {
-        this.backlog.push([name, {}, this.state]);
+    system.prototype.trigger = function(name) {
+        this.backlog.push([that[name], {}, this.state]);
         this.scene.add(this.state.objectProto);
 
         this.depth = 0;
         while (this.backlog.length > 0) {
-//            console.debug("[ITERATION] D: " + this.depth + " Size: " + this.backlog.length);
+            console.debug("[ITERATION] D: " + this.depth + " Size: " + this.backlog.length);
             while (this.backlog.length > 0) {
-//                console.debug("[RULE] " + this.backlog[0] + ":" + this.depth);
+                console.debug("[RULE] " + this.backlog[0] + ":" + this.depth);
                 var entry = this.backlog.shift();
                 this.state = entry[2];
-                this[entry[0]].call(this, entry[1], true);
+                entry[0].call(this, entry[1],true);
+
             }
             this.depth++;
             this.backlog = this.backlogBuild;
@@ -91,41 +90,43 @@ ELLY.System = (function() {
     /*
      * Move forward (scale sensitive)
      */
-    m.prototype.move =  m.prototype.m = function(amount) {
+    var move = function(amount) {
         this.state.objectProto.position.x += amount;
         return this;
     };
 
+    var m = move; 
+    
     /*
      * Change scale by factor amount
      */
-    m.prototype.scale =  m.prototype.s = function(amount) {
+    var scale = function(amount) {
         this.state.objectProto.scale.multiplyScalar(amount);
         return this;
     };
     
+    var s = scale;
+    
     // pitch roll yaw
-    m.prototype.roll = function(angle) {
+    var roll = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.x += angle;
     };
     
-    m.prototype.yaw = function(angle) {
+    var yaw = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.y += angle;
     };
     
-    m.prototype.pitch = function(angle) {
+    var pitch = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.z += angle;
     };
     
 
-  
-    m.prototype.rule("cube", function() {
-
-    
+    that.cuby = rulify(function() {
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        console.log("YEAH");
         this.state.objectProto.clone(cube);
         this.state.objectProto.parent.add(cube);
 
@@ -133,7 +134,7 @@ ELLY.System = (function() {
     });
 
     
-    return m;
+    return system;
     
 })();
 
