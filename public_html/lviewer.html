@@ -98,9 +98,9 @@ function init()
 //	cube.position.set(0,26,0);
 //	scene.add(cube);
 
-        escn = new ELLY.System(scene, 12);
-        escn.rule("R1","this.cube({s:1.2}); this.R1({m:1.0, s:0.9});");
-        escn.rule("R2","this.cube().R2({m:-1.0, s:0.9})");
+        escn = new ELLY.System(scene, 200);
+        escn.rule("R1","this.cube({s:1.2}); this.R1({pitch:-10, roll:13 , m:0.4, s:0.98});");
+        escn.rule("R2","this.cube().R2({pitch:11.0, m:-1.0, s:0.97})");
         escn.rule("R3","this.R1().R2()")
         escn.trigger("R3");
 }
