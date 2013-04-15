@@ -10,128 +10,199 @@ ELLY.System = (function() {
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
     var cubeMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
-    
-    var system = function(scene, maxDepth) {
+    var system = function(scene, script, maxDepth) {
         this.scene = scene;
+        this.script = script;
+
+        this.prefixCode = "";
 
         this.backlog = [];
         this.backlogBuild = [];
 
-        this.maxDepth = maxDepth || 10;
+        this.maxDepth = maxDepth || 60;
         this.depth = 0;
 
         this.state = new ELLY.State();
         this.scene.add(this.state.objectProto);
-    }
-
+        
+        
+        this.buildRules = true;
+        this.rule("cube", cubeFun);
+        
+        
+    };
+    
     system.prototype.constructor = system;
     
-    var that = this;
-
+    system.prototype.toString = function() {
+        return "[ELLY.System]";
+    };
     
-    var rulify = function (code) {
-       currentF = function(transforms, isRoot) {
+    
+    system.prototype.rule = function (name, code) {
+//        console.debug("4: " + this + " - " + name + " - " + code);
+        this[name] = function(transforms, isRoot) {
+//            console.debug("1: " + this + " - " + name + " - " + this.buildRules + " - " + this.depth + " - " + isRoot);
+            if (this.buildRules === true) {
+                return this;
+            }
+            
             if (isRoot === true) {
                 saveState = this.state;
                 this.state = new ELLY.State();
                 saveState.objectProto.add(this.state.objectProto);
                 this.evalTransforms(transforms);
                 code.call(this);
+//                eval(this.prefixCode + code);
                 this.state = saveState;
             } else if (this.depth < this.maxDepth) {
-                this.backlogBuild.push([currentF, transforms, this.state]);
+                this.backlogBuild.push([name, transforms, this.state]);
             }
             return this;            // method chain
         };
-        
-        return currentF;
+
+        return nop;
     };
     
-    system.prototype.rule = function(name, code) {
-        that[name] = this[name] = rulify(code);
+    system.prototype.rules = function(map) {
+        for (var e in map) {
+            this.rule(e, map[e]);
+        }
     };
     
-   
+    
+    
+    
+    var nop = new Function();
+    
     system.prototype.evalTransforms = function(transforms) {
         for(t in transforms) {
-            if (t in that) {
-                that[t].call(this, transforms[t]);
+            if (t in this) {
+                this[t].call(this, transforms[t]);
             } else {
-                console.warn("Skipping unknown transform \"" + t +"\".")
+                console.warn("Skipping unknown transform \"" + t +"\".");
             }
         }
     };
              
     
+    system.prototype.buildPrefixCode = function() {
+        this.prefixCode = "var that = this;\n";
+        for (var id in this) {
+        //    if (m !== "")
+//             this.prefixCode += "var " + m + " = this." + m + ";\n";
+            if (id instanceof Function) {
+                this.prefixCode += callWrapperFor(m);
+            }
+            try {
+               if (typeof(this[id]) === "function") {
+                    this.prefixCode += callWrapperFor(id);
+               }
+             } catch (err) {
+                  // inaccessible
+            }
+        }
+
+    //    console.debug(prefixCode);
+    };
+    
+    function callWrapperFor(name) {
+        return "var " + name + " = function() { return that." + name + ".apply(that, arguments); }\n";
+    }
+    
     /*
      * Start evaluation with rule "name"
      */
-    system.prototype.trigger = function(name) {
-        this.backlog.push([that[name], {}, this.state]);
+    system.prototype.trigger = function() {
+//         console.debug("2: " + this);
+
+
+//        this.backlog.push([this[name], {}, this.state]);
         this.scene.add(this.state.objectProto);
+//        eval(prefixCode + this.script);  // builds first backlog entry!
 
-        this.depth = 0;
-        while (this.backlog.length > 0) {
-            console.debug("[ITERATION] D: " + this.depth + " Size: " + this.backlog.length);
-            while (this.backlog.length > 0) {
-                console.debug("[RULE] " + this.backlog[0] + ":" + this.depth);
-                var entry = this.backlog.shift();
-                this.state = entry[2];
-                entry[0].call(this, entry[1],true);
-
+        this.buildRules = true;
+        
+        while (this.buildRules === true) {
+            this.buildPrefixCode();
+            var code = this.prefixCode + this.script;
+//            console.debug(code);
+            try {
+                new Function(code).call(this);
+            } catch(err) {
+//                console.debug(err);
+                continue;
             }
+            this.buildRules = false;
+        }
+        
+        this.buildPrefixCode();
+        var code = this.prefixCode + this.script;
+        new Function(code).call(this);
+        
+        
+        
+        this.depth = 0;
+        
+        do {
             this.depth++;
             this.backlog = this.backlogBuild;
-            this.backlogBuild = [];
-        }
+            this.backlogBuild = [];   
+
+            while (this.backlog.length > 0) {
+                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
+                var entry = this.backlog.shift();
+                this.state = entry[2];
+                this[entry[0]].call(this, entry[1], true);
+            }
+            
+        } while (this.backlogBuild.length > 0);
     };
     
     
     /*
      * Move forward (scale sensitive)
      */
-    var move = function(amount) {
+     system.prototype.move = function(amount) {
         this.state.objectProto.position.x += amount;
-        return this;
     };
 
-    var m = move; 
+     system.prototype.m = system.prototype.move; 
     
     /*
      * Change scale by factor amount
      */
-    var scale = function(amount) {
+     system.prototype.scale = function(amount) {
         this.state.objectProto.scale.multiplyScalar(amount);
-        return this;
     };
     
-    var s = scale;
+    system.prototype.s = system.prototype.scale;
     
     // pitch roll yaw
-    var roll = function(angle) {
+     system.prototype.roll = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.x += angle;
     };
     
-    var yaw = function(angle) {
+     system.prototype.yaw = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.y += angle;
     };
     
-    var pitch = function(angle) {
+     system.prototype.pitch = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.z += angle;
     };
     
 
-    that.cuby = rulify(function() {
+     var cubeFun = function() {
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        console.log("YEAH");
         this.state.objectProto.clone(cube);
         this.state.objectProto.parent.add(cube);
 
 //        return this;
-    });
+    };
+
 
     
     return system;
