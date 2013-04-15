@@ -1,14 +1,16 @@
+// (C) Philipp Graf
+
 var ELLY = ELLY || {};
 
-ELLY.State = function() {
-    this.objectProto = new THREE.Object3D();
-    
-};
-
-
 ELLY.System = (function() {
+    var standardMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
+
+    State = function() {
+        this.objectProto = new THREE.Object3D();
+        this.material = standardMaterial;
+    };
+
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
-    var cubeMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
     var system = function(scene, script, maxDepth) {
         this.scene = scene;
@@ -19,13 +21,12 @@ ELLY.System = (function() {
         this.backlog = [];
         this.backlogBuild = [];
 
-        this.maxDepth = maxDepth || 60;
+        this.maxDepth = maxDepth || 20;
         this.depth = 0;
 
-        this.state = new ELLY.State();
+        this.state = new State();
         this.scene.add(this.state.objectProto);
-        
-        
+                
         this.buildRules = true;
         this.rule("cube", cubeFun);
         
@@ -49,7 +50,7 @@ ELLY.System = (function() {
             
             if (isRoot === true) {
                 saveState = this.state;
-                this.state = new ELLY.State();
+                this.state = new State();
                 saveState.objectProto.add(this.state.objectProto);
                 this.evalTransforms(transforms);
                 code.call(this);
@@ -111,7 +112,7 @@ ELLY.System = (function() {
     }
     
     /*
-     * Start evaluation with rule "name"
+     * Start evaluation
      */
     system.prototype.trigger = function() {
 //         console.debug("2: " + this);
@@ -126,11 +127,11 @@ ELLY.System = (function() {
         while (this.buildRules === true) {
             this.buildPrefixCode();
             var code = this.prefixCode + this.script;
-//            console.debug(code);
+            console.debug(code);
             try {
                 new Function(code).call(this);
             } catch(err) {
-//                console.debug(err);
+                console.debug(err);
                 continue;
             }
             this.buildRules = false;
@@ -167,7 +168,7 @@ ELLY.System = (function() {
         this.state.objectProto.position.x += amount;
     };
 
-     system.prototype.m = system.prototype.move; 
+     system.prototype.mv = system.prototype.move; 
     
     /*
      * Change scale by factor amount
@@ -184,23 +185,31 @@ ELLY.System = (function() {
         this.state.objectProto.rotation.x += angle;
     };
     
+    system.prototype.rX = system.prototype.roll;
+    
      system.prototype.yaw = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.y += angle;
     };
-    
+
+    system.prototype.rY = system.prototype.yaw;
+
      system.prototype.pitch = function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.z += angle;
     };
     
+    system.prototype.rZ = system.prototype.pitch;
+
+    system.prototype.material = function(mat) {
+        this.state.material = mat;
+    };
+
 
      var cubeFun = function() {
-        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        var cube = new THREE.Mesh(cubeGeometry, this.state.material);
         this.state.objectProto.clone(cube);
         this.state.objectProto.parent.add(cube);
-
-//        return this;
     };
 
 
