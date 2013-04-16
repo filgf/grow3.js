@@ -61,8 +61,6 @@ ELLY.System = (function() {
             }
             return this;            // method chain
         };
-
-        return nop;
     };
     
     system.prototype.rules = function(map) {
@@ -70,11 +68,6 @@ ELLY.System = (function() {
             this.rule(e, map[e]);
         }
     };
-    
-    
-    
-    
-    var nop = new Function();
     
     system.prototype.evalTransforms = function(transforms) {
         for(t in transforms) {
@@ -85,41 +78,25 @@ ELLY.System = (function() {
             }
         }
     };
-             
     
     system.prototype.buildPrefixCode = function() {
         this.prefixCode = "var that = this;\n";
         for (var id in this) {
-        //    if (m !== "")
-//             this.prefixCode += "var " + m + " = this." + m + ";\n";
-            if (id instanceof Function) {
-                this.prefixCode += callWrapperFor(m);
-            }
             try {
                if (typeof(this[id]) === "function") {
-                    this.prefixCode += callWrapperFor(id);
+                    this.prefixCode += "var " + id + " = function() { return that." + id + ".apply(that, arguments); }\n";
                }
-             } catch (err) {
-                  // inaccessible
-            }
+            } catch (err) { }    // ignore inaccessible
         }
-
-    //    console.debug(prefixCode);
     };
-    
-    function callWrapperFor(name) {
-        return "var " + name + " = function() { return that." + name + ".apply(that, arguments); }\n";
-    }
     
     /*
      * Start evaluation
      */
-    system.prototype.trigger = function() {
-//         console.debug("2: " + this);
-
-//        this.backlog.push([this[name], {}, this.state]);
+    system.prototype.trigger = function(start) {
+        
+        start = start || "start";
         this.scene.add(this.state.objectProto);
-//        eval(prefixCode + this.script);  // builds first backlog entry!
 
         this.buildRules = true;
         this.buildPrefixCode();
@@ -128,7 +105,8 @@ ELLY.System = (function() {
 
         this.buildRules = false;
         this.buildPrefixCode();
-        code = this.prefixCode + this.script + "start();\n";
+        code = this.prefixCode + this.script + "; start();\n";
+        console.log(code);
         new Function(code).call(this);
         
         this.depth = 0;
@@ -139,7 +117,7 @@ ELLY.System = (function() {
             this.backlogBuild = [];   
 
             while (this.backlog.length > 0) {
-                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
+//                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
                 var entry = this.backlog.shift();
                 this.state = entry[2];
                 this[entry[0]].call(this, entry[1], true);
