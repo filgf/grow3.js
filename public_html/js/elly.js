@@ -117,31 +117,19 @@ ELLY.System = (function() {
     system.prototype.trigger = function() {
 //         console.debug("2: " + this);
 
-
 //        this.backlog.push([this[name], {}, this.state]);
         this.scene.add(this.state.objectProto);
 //        eval(prefixCode + this.script);  // builds first backlog entry!
 
         this.buildRules = true;
-        
-        while (this.buildRules === true) {
-            this.buildPrefixCode();
-            var code = this.prefixCode + this.script;
-            console.debug(code);
-            try {
-                new Function(code).call(this);
-            } catch(err) {
-                console.debug(err);
-                continue;
-            }
-            this.buildRules = false;
-        }
-        
         this.buildPrefixCode();
         var code = this.prefixCode + this.script;
         new Function(code).call(this);
-        
-        
+
+        this.buildRules = false;
+        this.buildPrefixCode();
+        code = this.prefixCode + this.script + "start();\n";
+        new Function(code).call(this);
         
         this.depth = 0;
         

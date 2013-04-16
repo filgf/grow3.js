@@ -35,12 +35,15 @@
                 R3 : function() {
                     R1();
                     R2();
+                },
+                
+                start : function() {
+                    for (var i=0; i<720; i+=60) {
+                        R3({roll : i/2, pitch : i}); 
+                    }
                 }
             });
-
-            for (var i=0; i<720; i+=60) {
-                R3({roll : i/2, pitch : i}); 
-            }
+            
         </div>
 
         <script src="js/lib/three.min.js"></script>
