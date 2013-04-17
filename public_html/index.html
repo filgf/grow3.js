@@ -97,10 +97,10 @@
                 controls = new THREE.TrackballControls(camera);
 
                 // LIGHT
-                var light = new THREE.PointLight(0xffeeee, 1.6);
+                var light = new THREE.PointLight(0xffeeee, 1.3);
                 light.position.set(10, 10, 10);
                 scene.add(light);
-                var light2 = new THREE.PointLight(0xeeeeff, 1.2); // soft white light
+                var light2 = new THREE.PointLight(0xeeeeff, 1.0); // soft white light
                 light2.position.set(-10, -10, -10);
                 scene.add(light2);
 
@@ -108,6 +108,10 @@
                 var codeId = "sample1";
 
                 var ellyScript = document.getElementById(codeId).innerText;
+                if (ellyScript === undefined) {
+                    ellyScript = document.getElementById(codeId).textContent;
+                }
+                
                 var elly = new ELLY.System(scene, ellyScript, 100);
                 elly.trigger();
             }
