@@ -76,6 +76,37 @@
             
         </div>
         
+        <div id="randomRule" style="display:none">
+            var mat1 = new THREE.MeshPhongMaterial({color: 0xddccbb});
+            var mat2 = new THREE.MeshPhongMaterial({color: 0xccddbb});
+            
+            maxDepth(80);
+
+            rules({
+                seg : [ 
+                    function(){
+                        cube({scale: 0.5 }); 
+                        seg({move: 2.0, pitch: -45});
+                    },
+                    function(){
+                        cube({scale: 0.5, material : mat1 }); 
+                        seg({yaw: 90, pitch: 45, move: 1.0});
+                    },
+                    function(){
+                        cube({scale: 0.5, material : mat2 }); 
+                        seg({yaw: -90, move: 1.0});
+                    }
+                ],
+                
+                start : function() {
+                    for (var i=0; i<20; i++) {
+                        seg();
+                    }
+                }
+            });
+            
+        </div>
+        
         <script src="js/lib/three.min.js"></script>
         <script src="js/lib/Detector.js"></script>
 <!--        <script src="js/lib/stats.min.js"></script> -->
@@ -135,7 +166,7 @@
                 scene.add(light2);
 
                 //-----------------------------------------------
-                var codeId = "sample1";
+                var codeId = "randomRule";
 
                 var ellyScript = document.getElementById(codeId).innerText;
                 if (ellyScript === undefined) {

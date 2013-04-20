@@ -60,7 +60,13 @@ ELLY.System = (function() {
                 this.state = new State(saveState);
                 saveState.objectProto.add(this.state.objectProto);
                 this.evalTransforms(transforms);
-                func.call(this);
+
+                if (typeof(func) === "function") {
+                    func.call(this);
+                } else {        // TODO: Check type
+                    var index = Math.floor(Math.random() * func.length);
+                    func[index].call(this);
+                }
                 this.state = saveState;
             } else if (this.depth < this.mDepth) {
                 this.backlogBuild.push([name, transforms, this.state]);
