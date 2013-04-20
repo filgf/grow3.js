@@ -5,14 +5,18 @@ var ELLY = ELLY || {};
 ELLY.System = (function() {
     var standardMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
-    State = function() {
+    State = function(parent) {
         this.objectProto = new THREE.Object3D();
-        this.material = standardMaterial;
+        if (parent === undefined) {
+            this.material = standardMaterial;
+        } else {
+            this.material = parent.material;
+        }
     };
 
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
 
-    var system = function(scene, script, maxDepth) {
+    var system = function(scene, script) {
         this.scene = scene;
         this.script = script;
 
@@ -21,7 +25,7 @@ ELLY.System = (function() {
         this.backlog = [];
         this.backlogBuild = [];
 
-        this.maxDepth = maxDepth || 20;
+        this.mDepth = 20;
         this.depth = 0;
 
         this.state = new State();
@@ -39,8 +43,11 @@ ELLY.System = (function() {
         return "[ELLY.System]";
     };
     
+    system.prototype.maxDepth = function(md) {
+        this.mDepth = md;
+    }
     
-    system.prototype.rule = function (name, code) {
+    system.prototype.rule = function (name, func) {
 //        console.debug("4: " + this + " - " + name + " - " + code);
         this[name] = function(transforms, isRoot) {
 //            console.debug("1: " + this + " - " + name + " - " + this.buildRules + " - " + this.depth + " - " + isRoot);
@@ -50,13 +57,12 @@ ELLY.System = (function() {
             
             if (isRoot === true) {
                 saveState = this.state;
-                this.state = new State();
+                this.state = new State(saveState);
                 saveState.objectProto.add(this.state.objectProto);
                 this.evalTransforms(transforms);
-                code.call(this);
-//                eval(this.prefixCode + code);
+                func.call(this);
                 this.state = saveState;
-            } else if (this.depth < this.maxDepth) {
+            } else if (this.depth < this.mDepth) {
                 this.backlogBuild.push([name, transforms, this.state]);
             }
             return this;            // method chain
