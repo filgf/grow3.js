@@ -1,9 +1,13 @@
 Geplante Features
 =================
-- Anzeigen von Parameterwerten: Polygone, Objekte, Position Kamera, Position Licht
+- Debug/Anzeigen von Parameterwerten: Polygone, Objekte, Position Kamera, Position Licht
+- Debug/Single Step (pro Tiefe!)
 
-- Random selection of rules (Funktionslisten/-maps o. spezieller Aufrufoperator select({R1 : 0.4, R2 : 0.5,...}) )
-- Random attributes (rnd - Methode)
+X - Random selection of rules (Funktionslisten)
+X - Random attributes (rnd - Methode)
+X - Transformationen: translateHorizontal, translateVertical
+
+- Bessere Fehlerbehandlung
 
 - Abfolgen von: Werten, Buchstaben, Farbwerten,...
 - Mehr Objekttypen: Kugel, Zylinder, Pyramide, allg. Mesh, Text

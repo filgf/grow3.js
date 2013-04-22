@@ -138,6 +138,23 @@ ELLY.System = (function() {
         } while (this.backlogBuild.length > 0);
     };
     
+    system.prototype.rnd = function(p1, p2) {
+        var r = Math.random();
+        if (Array.isArray(p1)) {
+            return p1[Math.floor(r * p1.length)];
+        }
+        
+        if (!(p1 === undefined)) {
+            if (!(p2 === undefined)) {
+                r = r * (p2-p1) + p1;
+            } else {
+                r = r * 2 * p1 - p1;
+            }
+        }
+        return r;
+    }
+    
+    
     
     /*
      * Move forward (scale sensitive)
@@ -146,7 +163,21 @@ ELLY.System = (function() {
         this.state.objectProto.position.x += amount;
     };
 
-     system.prototype.mv = system.prototype.move; 
+    system.prototype.m = system.prototype.move; 
+    
+    system.prototype.transHoriz = function(amount) {
+        this.state.objectProto.position.y += amount;
+    };
+
+    system.prototype.tH = system.prototype.transHoriz; 
+    
+    system.prototype.transVert = function(amount) {
+        this.state.objectProto.position.z += amount;
+    };
+
+    system.prototype.tV = system.prototype.transVert; 
+    
+
     
     /*
      * Change scale by factor amount

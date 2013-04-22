@@ -106,6 +106,53 @@
             });
             
         </div>
+
+        <div id="randomValue" style="display:none">
+            var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+            
+            maxDepth(50);
+
+            rules({
+                seg : function(){
+                        cube({scale: 0.5 }); 
+                        seg({move: 0.9, roll: rnd(-5, 5) , pitch: rnd(30.0)});
+                    },
+                
+                start : function() {
+                    for (var i=0; i<60; i++) {
+                        seg({yaw : rnd(360), material : rnd(mats), move: 0.9, roll: rnd(-5, 5) , pitch: rnd(-30.0, 30.0)});
+                    }
+                }
+            });
+            
+        </div>
+
+        <div id="testTranslate" style="display:none">
+            var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+            maxDepth(50);
+
+            rules({
+                line : function() {
+                    for (var x = -5; x < 5; x++) {
+                        cube({scale : 0.9, move : x, roll : rnd(15)});
+                    }
+                },
+                
+                quad : function() {
+                    for (var y = -5; y < 5; y++) {
+                        line({tH : y});
+                    }
+                },
+            
+                start : function() {
+                    for (var z = -5; z < 5; z++) {
+                        quad({tV : z, material : mats[(z+5)%2]});
+                    }
+                } 
+            });
+            
+        </div>
+
         
         <script src="js/lib/three.min.js"></script>
         <script src="js/lib/Detector.js"></script>
@@ -152,7 +199,7 @@
 
                 // EVENTS
                 THREEx.WindowResize(renderer, camera);
-                THREEx.FullScreen.bindKey({charCode: 'm'.charCodeAt(0)});
+                THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
 
                 // CONTROLS
                 controls = new THREE.TrackballControls(camera);
@@ -166,7 +213,7 @@
                 scene.add(light2);
 
                 //-----------------------------------------------
-                var codeId = "randomRule";
+                var codeId = "testTranslate";
 
                 var ellyScript = document.getElementById(codeId).innerText;
                 if (ellyScript === undefined) {
