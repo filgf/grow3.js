@@ -1,4 +1,4 @@
-// (C) Philipp Graf
+// (C) Philipp Graf 2013
 
 var ELLY = ELLY || {};
 
