@@ -15,7 +15,7 @@ X - Transformationen: translateHorizontal, translateVertical
   - Zylinder
   - Pyramide
   - allg. Mesh
-  - . Text (TODO: Caching)
+  - X Text (X Caching)
 
 - Kamera: spezielle Transformation?
 - Licht: spezielle Transformation?
