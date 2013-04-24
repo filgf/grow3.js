@@ -158,18 +158,11 @@
 
             var whitman = "Keep your face always toward the sunshine - and shadows will fall behind you. ".split("");
             
-            var textParam = {
-                size : 1.0,
-                height : 0.3,
-                curveSegments : 2,
-                font : "helvetiker"
-            };
-            
             maxDepth(100);
 
             rules({
                 step : function() {
-                    glyphs({text: whitman, param: textParam, scale : 1.0});
+                    glyphs({text: whitman, scale : 1.0});
                     step({move : 1.0, pitch:3.0, roll: 3.0, yaw: 5.0});
                 },
             
