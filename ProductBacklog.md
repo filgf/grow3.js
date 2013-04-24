@@ -7,10 +7,15 @@ X - Random selection of rules (Funktionslisten)
 X - Random attributes (rnd - Methode)
 X - Transformationen: translateHorizontal, translateVertical
 
-- Bessere Fehlerbehandlung
+- Bessere Fehlerbehandlung, wie??
 
-- Abfolgen von: Werten, Buchstaben, Farbwerten,...
-- Mehr Objekttypen: Kugel, Zylinder, Pyramide, allg. Mesh, Text
+- Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach Tiefe, Index)
+- Mehr Objekttypen: 
+  - Kugel
+  - Zylinder
+  - Pyramide
+  - allg. Mesh
+  - . Text (TODO: Caching)
 
 - Kamera: spezielle Transformation?
 - Licht: spezielle Transformation?

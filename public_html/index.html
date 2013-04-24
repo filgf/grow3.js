@@ -153,6 +153,39 @@
             
         </div>
 
+        <div id="testText" style="display:none">
+            var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+
+            var whitman = "Keep your face always toward the sunshine - and shadows will fall behind you.".split("");
+            
+            var textParam = {
+                size : 1.0,
+                height : 0.3,
+                curveSegments : 2,
+                font : "helvetiker"
+            };
+            
+            maxDepth(100);
+
+            rules({
+                step : function() {
+                    glyphs({text: whitman, param: textParam, scale : 1.0});
+                    step({move : 1.0, pitch:3.0, roll: 3.0, yaw: 5.0});
+                },
+            
+                msg : function() {
+                    step({move : 1.7});
+                },
+                
+                start : function() {
+                    for (var i = 0; i<20; i++) {
+                        cube();
+                        msg({pitch : rnd(180), yaw : rnd(180), material : rnd(mats)});
+                    }
+                } 
+            });
+            
+        </div>
         
         <script src="js/lib/three.min.js"></script>
         <script src="js/lib/Detector.js"></script>
@@ -161,7 +194,10 @@
 <!--        <script src="js/lib/THREEx.KeyboardState.js"></script> -->
         <script src="js/lib/THREEx.FullScreen.js"></script>
         <script src="js/lib/THREEx.WindowResize.js"></script>
-        <script src="js/elly.js"></script>
+
+        <script src="js/lib/helvetiker_regular.typeface.js"></script>
+        
+        <script src="js/ELLY.js"></script>
 
         <script>
             var container, scene, camera, renderer, controls;
@@ -212,7 +248,7 @@
                 scene.add(light2);
 
                 //-----------------------------------------------
-                var codeId = "testTranslate";
+                var codeId = "testText";
 
                 var ellyScript = document.getElementById(codeId).innerText;
                 if (ellyScript === undefined) {
