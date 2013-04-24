@@ -1,6 +1,7 @@
 Geplante Features
 =================
 - Debug/Anzeigen von Parameterwerten: Polygone, Objekte, Position Kamera, Position Licht
+- Debug/Anzeigen von lokalen Koordinaten + Scale + Tiefe (Transparenz)
 - Debug/Single Step (pro Tiefe!)
 
 X - Random selection of rules (Funktionslisten)
