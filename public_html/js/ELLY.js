@@ -7,10 +7,14 @@ ELLY.System = (function() {
 
     State = function(parent) {
         this.objectProto = new THREE.Object3D();
+        this.text = "";
+        this.textParamId = undefined;
         if (parent === undefined) {
             this.material = standardMaterial;
+            this.textParam = { size : 1.0, height : 0.3, curveSegments : 2, font : "helvetiker" };
         } else {
             this.material = parent.material;
+            this.textParam = parent.textParam;
         }
     };
 
@@ -33,7 +37,7 @@ ELLY.System = (function() {
                 
         this.buildRules = true;
         this.rule("cube", cubeFun);
-        
+        this.rule("glyphs", glyphsFun);
         
     };
     
@@ -48,9 +52,8 @@ ELLY.System = (function() {
     }
     
     system.prototype.rule = function (name, func) {
-//        console.debug("4: " + this + " - " + name + " - " + code);
+
         this[name] = function(transforms, isRoot) {
-//            console.debug("1: " + this + " - " + name + " - " + this.buildRules + " - " + this.depth + " - " + isRoot);
             if (this.buildRules === true) {
                 return this;
             }
@@ -84,7 +87,15 @@ ELLY.System = (function() {
     system.prototype.evalTransforms = function(transforms) {
         for(t in transforms) {
             if (t in this) {
-                this[t].call(this, transforms[t]);
+                var trans = transforms[t];
+                if( Array.isArray(trans) ) {
+                    if (trans.startDepth === undefined) {
+                        trans.startDepth = this.depth;
+                    }
+                    this[t].call(this, trans[(this.depth - trans.startDepth) % trans.length]);
+                } else {
+                    this[t].call(this, trans);
+                }
             } else {
                 console.warn("Skipping unknown transform \"" + t +"\".");
             }
@@ -113,7 +124,8 @@ ELLY.System = (function() {
         this.buildRules = true;
         this.buildPrefixCode();
         var code = this.prefixCode + this.script;
-        new Function(code).call(this);
+        var f = new Function(code);
+        f.call(this);
 
         this.buildRules = false;
         this.buildPrefixCode();
@@ -214,6 +226,16 @@ ELLY.System = (function() {
         this.state.material = mat;
     };
 
+    system.prototype.text = function(s) {
+        this.state.text = s;
+    }
+    
+    system.prototype.textParam = function(o) {
+        if (this.textParam !== o) {
+            this.textParamId = undefined;
+        }
+        this.textParam = o;
+    }
 
      var cubeFun = function() {
         var cube = new THREE.Mesh(cubeGeometry, this.state.material);
@@ -221,7 +243,37 @@ ELLY.System = (function() {
         this.state.objectProto.parent.add(cube);
     };
 
+    var glyphsCache = {};
+    
+    var centerX = function ( geometry ) {
+        geometry.computeBoundingBox();
+        var bb = geometry.boundingBox;
+        var offsetX = -0.5 * (bb.min.x + bb.max.x);
+        geometry.applyMatrix( new THREE.Matrix4().makeTranslation( offsetX, 0, 0 ) );
+        geometry.computeBoundingBox();
 
+        return offsetX;
+    };
+    
+    var glyphsFun = function() {
+        var p = this.state.textParam;
+        if (this.state.textParamId === undefined) {
+            this.state.textParamId = p.font + ":" + p.size + ":" + p.height + ":" + p.curveSegments;
+            glyphsCache[this.state.textParamId] = glyphsCache[this.state.textParamId] || {};
+        }
+        
+        if (this.state.text !== " ") {
+            if (!glyphsCache[this.state.textParamId].hasOwnProperty(this.state.text)) {
+                var geo = new THREE.TextGeometry(this.state.text, this.state.textParam);  
+                centerX( geo );  // TODO: Center X (-> Monospace, preserve baselines)
+                glyphsCache[this.state.textParamId][this.state.text] = geo;
+            }
+            
+            var glyph = new THREE.Mesh(glyphsCache[this.state.textParamId][this.state.text], this.state.material);
+            this.state.objectProto.clone(glyph);
+            this.state.objectProto.parent.add(glyph);
+        }
+    };
     
     return system;
     
