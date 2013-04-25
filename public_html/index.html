@@ -191,80 +191,21 @@
         <script src="js/lib/helvetiker_regular.typeface.js"></script>
         
         <script src="js/ELLY.js"></script>
+        <script src="js/ELLY.Runner.js"></script>
 
         <script>
-            var container, scene, camera, renderer, controls;
-//            var clock = new THREE.Clock();
-
             window.onload = function() {
-                init();
-                animate();
-            };
-
-            function init() {
-
-                // SCENE
-                scene = new THREE.Scene();
-
-                // CAMERA
-                var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-                var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
-                camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-                scene.add(camera);
-                camera.position.set(-25, -10, 10);
-                camera.lookAt(scene.position);
-
-                // RENDERER
-                if (Detector.webgl) {
-                    renderer = new THREE.WebGLRenderer({antialias: true});
-                } else {
-                    renderer = new THREE.CanvasRenderer();
-                }
-                renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-                container = document.createElement('div');
-                document.body.appendChild(container);
-                container.appendChild(renderer.domElement);
-
-                // EVENTS
-                THREEx.WindowResize(renderer, camera);
-                THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
-
-                // CONTROLS
-                controls = new THREE.TrackballControls(camera);
-
-                // LIGHT
-                var light = new THREE.PointLight(0xffeeee, 1.3);
-                light.position.set(10, 10, 10);
-                scene.add(light);
-                var light2 = new THREE.PointLight(0xeeeeff, 1.0); // soft white light
-                light2.position.set(-10, -10, -10);
-                scene.add(light2);
-
-                //-----------------------------------------------
                 var codeId = "testText";
 
                 var ellyScript = document.getElementById(codeId).innerText;
                 if (ellyScript === undefined) {
                     ellyScript = document.getElementById(codeId).textContent;
                 }
-                
-                var elly = new ELLY.System(scene, ellyScript);
-                elly.trigger();
-            }
 
-            function animate() {
-                requestAnimationFrame(animate);
-                render();
-                update();
-            }
+                var runner = new ELLY.Runner(document.body);
+                runner.run(ellyScript);
+            };  
 
-            function update() {
-                controls.update();
-            }
-
-            function render() {
-                renderer.render(scene, camera);
-            }
-       </script>
+        </script>
     </body>
 </html>
