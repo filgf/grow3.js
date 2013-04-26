@@ -1,16 +1,7 @@
-Geplante Features
-=================
-- Debug/Anzeigen von Parameterwerten: Polygone, Objekte, Position Kamera, Position Licht
-- Debug/Anzeigen von lokalen Koordinaten + Scale + Tiefe (Transparenz)
-- Debug/Single Step (pro Tiefe!)
+Plan r01
+========
+- Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe, Index)
 
-X - Random selection of rules (Funktionslisten)
-X - Random attributes (rnd - Methode)
-X - Transformationen: translateHorizontal, translateVertical
-
-- Bessere Fehlerbehandlung, wie??
-
-- Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach Tiefe, Index)
 - Mehr Objekttypen: 
   - Kugel
   - Zylinder
@@ -18,7 +9,29 @@ X - Transformationen: translateHorizontal, translateVertical
   - allg. Mesh
   - X Text (X Caching)
 
-- Kamera: spezielle Transformation?
-- Licht: spezielle Transformation?
-
 - Webseite/Showcase mit Liste
+- Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js / grow3D.js
+
+X - Kamera: spezielle Transformation?
+
+- Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (Rotation auf parent!?)
+
+- Lichtposition: spezielle Transformation?
+
+
+Done r01
+========
+X - Random selection of rules (Funktionslisten)
+X - Random attributes (rnd - Methode)
+X - Transformationen: translateHorizontal, translateVertical
+
+X - Extrahieren ELLY.Runner.js (init etc.)
+
+
+Geplante Features
+=================
+- Debug/Anzeigen von Parameterwerten: Polygone, Objekte, Position Kamera, Position Licht
+- Debug/Anzeigen von lokalen Koordinaten + Scale + Tiefe (Transparenz)
+- Debug/Single Step (pro Tiefe!)
+
+- Bessere Fehlerbehandlung, wie??

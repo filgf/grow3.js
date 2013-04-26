@@ -36,12 +36,6 @@ ELLY.Runner = (function() {
 
         // CONTROLS
         this.controls = new THREE.TrackballControls(this.camera);
-
-
-
-
-
-        
     };
 
     runner.prototype.run = function(script) {
@@ -59,7 +53,7 @@ ELLY.Runner = (function() {
         this.scene.add(light2);
 
         // ELLY
-        this.elly = new ELLY.System(this.scene, script);
+        this.elly = new ELLY.System(this.scene, script, this.camera);
         this.elly.trigger();
 
         animate();

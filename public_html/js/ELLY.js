@@ -20,7 +20,7 @@ ELLY.System = (function() {
 
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
 
-    var system = function(scene, script) {
+    var system = function(scene, script, camera /* optional */) {
         this.scene = scene;
         this.script = script;
 
@@ -34,10 +34,14 @@ ELLY.System = (function() {
 
         this.state = new State();
         this.scene.add(this.state.objectProto);
+
+        this.cameraObj = camera;
                 
         this.buildRules = true;
         this.rule("cube", cubeFun);
         this.rule("glyphs", glyphsFun);
+        
+        this.rule("camera", cameraFun);
         
     };
     
@@ -257,13 +261,13 @@ ELLY.System = (function() {
     
     var glyphsFun = function() {
         var p = this.state.textParam;
-        if (this.state.textParamId === undefined) {
+        if (this.state.textParamId === undefined) {                                         // Font change -> check if cache exists & build
             this.state.textParamId = p.font + ":" + p.size + ":" + p.height + ":" + p.curveSegments;
             glyphsCache[this.state.textParamId] = glyphsCache[this.state.textParamId] || {};
         }
         
         if (this.state.text !== " ") {
-            if (!glyphsCache[this.state.textParamId].hasOwnProperty(this.state.text)) {
+            if (!glyphsCache[this.state.textParamId].hasOwnProperty(this.state.text)) {     // Build (cached) text geometry
                 var geo = new THREE.TextGeometry(this.state.text, this.state.textParam);  
                 centerX( geo );  // TODO: Center X (-> Monospace, preserve baselines)
                 glyphsCache[this.state.textParamId][this.state.text] = geo;
@@ -274,6 +278,19 @@ ELLY.System = (function() {
             this.state.objectProto.parent.add(glyph);
         }
     };
+    
+     var cameraFun = function() {
+         console.debug("THIS: " + this);
+        if (this.cameraObj !== undefined) {
+            if (this.cameraObj.parent !== undefined) {
+                this.cameraObj.parent.remove(this.cameraObj);
+            }
+            this.state.objectProto.clone(this.cameraObj);  // update cam with trafo
+            this.cameraObj.lookAt(0);
+            this.state.objectProto.parent.add(this.cameraObj);
+        }
+    };
+
     
     return system;
     
