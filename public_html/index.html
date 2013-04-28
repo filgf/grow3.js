@@ -17,197 +17,226 @@
         </style>
     </head>
     <body>
-        <div id="sample1" style="display:none">
-            var mat1 = new THREE.MeshPhongMaterial({color: 0xbbbbbb});
-            var mat2 = new THREE.MeshPhongMaterial({color: 0xddbbbb});
-            
-            maxDepth(100);
-            
-            rules({
-                spiral : function(){
-                    cube({scale:1.2, material : mat1}); 
-                    spiral({pitch:-10, roll:13 , move:0.6, scale:0.98});
-                },
+        <div id="sampleSources" style="display:none">
+            <div id="sample1">
+                var mat1 = new THREE.MeshPhongMaterial({color: 0xbbbbbb});
+                var mat2 = new THREE.MeshPhongMaterial({color: 0xddbbbb});
 
-                start : function() {
-                    for (var i=0; i<720; i+=15) {
-                        spiral({scale:0.9, yaw : i/3, pitch : i});
-                    }
-                }
-            });
-            
-        </div>
+                maxDepth(100);
 
-        <div id="sample2" style="display:none">
-            var mat1 = new THREE.MeshPhongMaterial({color: 0xddccbb});
-            var mat2 = new THREE.MeshPhongMaterial({color: 0xccddbb});
-            
-            maxDepth(120);
+                rules({
+                    spiral : function(){
+                        cube({scale:1.2, material : mat1}); 
+                        spiral({pitch:-10, roll:13 , move:0.6, scale:0.98});
+                    },
 
-            rules({
-                spiralElement : function(){
-                    cube({scale: 0.5, move: 18, }); 
-                },
-
-                spiral : function() {
-                     for (var j=0; j<360; j+=0.5) {
-                        spiralElement({roll: j*6, yaw: j*0.5}); 
-                    }
-                },
-                
-                arc : function() {
-                    cube({scale:0.9}); 
-                    arc({pitch:4.0, yaw:7.0, move:-1.3, s:0.97}); 
-                },
-
-                twistyObject : function() {
-                    for (var i=-90; i<=90; i+=60) {
-                        for (var j=0; j<360; j+=60) {
-                            arc({pitch : i, yaw : j}); 
+                    start : function() {
+                        for (var i=0; i<720; i+=15) {
+                            spiral({scale:0.9, yaw : i/3, pitch : i});
                         }
                     }
-                },
-                
-                start : function() {
-                    twistyObject({material : mat2});
-                    spiral({material : mat1});
-                }
-            });
-            
-        </div>
-        
-        <div id="randomRule" style="display:none">
-            var mat1 = new THREE.MeshPhongMaterial({color: 0xddccbb});
-            var mat2 = new THREE.MeshPhongMaterial({color: 0xccddbb});
-            
-            maxDepth(80);
+                });
 
-            rules({
-                seg : [ 
-                    function(){
-                        cube({scale: 0.5 }); 
-                        seg({move: 2.0, pitch: -45});
+            </div>
+
+            <div id="sample2">
+                var mat1 = new THREE.MeshPhongMaterial({color: 0xddccbb});
+                var mat2 = new THREE.MeshPhongMaterial({color: 0xccddbb});
+
+                maxDepth(120);
+
+                rules({
+                    spiralElement : function(){
+                        cube({scale: 0.5, move: 18, }); 
                     },
-                    function(){
-                        cube({scale: 0.5, material : mat1 }); 
-                        seg({yaw: 90, pitch: 45, move: 1.0});
+
+                    spiral : function() {
+                         for (var j=0; j<360; j+=0.5) {
+                            spiralElement({roll: j*6, yaw: j*0.5}); 
+                        }
                     },
-                    function(){
-                        cube({scale: 0.5, material : mat2 }); 
-                        seg({yaw: -90, move: 1.0});
-                    }
-                ],
-                
-                start : function() {
-                    for (var i=0; i<20; i++) {
-                        seg();
-                    }
-                }
-            });
-            
-        </div>
 
-        <div id="randomValue" style="display:none">
-            var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
-            
-            maxDepth(50);
-
-            rules({
-                seg : function(){
-                        cube({scale: 0.5 }); 
-                        seg({move: 0.9, roll: rnd(-5, 5) , pitch: rnd(30.0)});
+                    arc : function() {
+                        cube({scale:0.9}); 
+                        arc({pitch:4.0, yaw:7.0, move:-1.3, s:0.97}); 
                     },
-                
-                start : function() {
-                    for (var i=0; i<60; i++) {
-                        seg({yaw : rnd(360), material : rnd(mats), move: 0.9, roll: rnd(-5, 5) , pitch: rnd(-30.0, 30.0)});
+
+                    twistyObject : function() {
+                        for (var i=-90; i<=90; i+=60) {
+                            for (var j=0; j<360; j+=60) {
+                                arc({pitch : i, yaw : j}); 
+                            }
+                        }
+                    },
+
+                    start : function() {
+                        twistyObject({material : mat2});
+                        spiral({material : mat1});
                     }
-                }
-            });
-            
+                });
+
+            </div>
+
+            <div id="randomRule">
+                var mat1 = new THREE.MeshPhongMaterial({color: 0xddccbb});
+                var mat2 = new THREE.MeshPhongMaterial({color: 0xccddbb});
+
+                maxDepth(80);
+
+                rules({
+                    seg : [ 
+                        function(){
+                            cube({scale: 0.5 }); 
+                            seg({move: 2.0, pitch: -45});
+                        },
+                        function(){
+                            cube({scale: 0.5, material : mat1 }); 
+                            seg({yaw: 90, pitch: 45, move: 1.0});
+                        },
+                        function(){
+                            cube({scale: 0.5, material : mat2 }); 
+                            seg({yaw: -90, move: 1.0});
+                        }
+                    ],
+
+                    start : function() {
+                        for (var i=0; i<20; i++) {
+                            seg();
+                        }
+                    }
+                });
+
+            </div>
+
+            <div id="randomValue">
+                var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+
+                maxDepth(50);
+
+                rules({
+                    seg : function(){
+                            cube({scale: 0.5 }); 
+                            seg({move: 0.9, roll: rnd(-5, 5) , pitch: rnd(30.0)});
+                        },
+
+                    start : function() {
+                        for (var i=0; i<60; i++) {
+                            seg({yaw : rnd(360), material : rnd(mats), move: 0.9, roll: rnd(-5, 5) , pitch: rnd(-30.0, 30.0)});
+                        }
+                    }
+                });
+
+            </div>
+
+            <div id="testTranslate">
+                var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+                maxDepth(50);
+
+                rules({
+                    line : function() {
+                        for (var x = -5; x < 5; x++) {
+                            cube({scale : 0.9, move : x, roll : rnd(15)});
+                        }
+                    },
+
+                    quad : function() {
+                        for (var y = -5; y < 5; y++) {
+                            line({tH : y});
+                        }
+                    },
+
+                    start : function() {
+                        for (var z = -5; z < 5; z++) {
+                            quad({tV : z, material : mats[(z+5)%2]});
+                        }
+                    } 
+                });
+
+            </div>
+
+            <div id="testText">
+                var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+
+                var whitman = "Keep your face always toward the sunshine - and shadows will fall behind you. ".split("");
+
+                maxDepth(100);
+
+                rules({
+                    step : function() {
+                        glyphs({text: whitman, scale: 1.3});
+                        step({move: 1.0, pitch: 3.0, roll: 3.0, yaw: 5.0});
+                    },
+
+                    msg : function() {
+                        step({move: 1.7});
+                    },
+
+                    start : function() {
+                        camera({pitch: 20, yaw: 45,  move: 14});
+
+                        for (var i = 0; i<20; i++) {
+                            cube();
+                            msg({pitch: rnd(180), yaw: rnd(180), material: rnd(mats)});
+                        }
+                    } 
+                });
+
+            </div>
         </div>
-
-        <div id="testTranslate" style="display:none">
-            var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
-            maxDepth(50);
-
-            rules({
-                line : function() {
-                    for (var x = -5; x < 5; x++) {
-                        cube({scale : 0.9, move : x, roll : rnd(15)});
-                    }
-                },
-                
-                quad : function() {
-                    for (var y = -5; y < 5; y++) {
-                        line({tH : y});
-                    }
-                },
-            
-                start : function() {
-                    for (var z = -5; z < 5; z++) {
-                        quad({tV : z, material : mats[(z+5)%2]});
-                    }
-                } 
-            });
-            
-        </div>
-
-        <div id="testText" style="display:none">
-            var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
-
-            var whitman = "Keep your face always toward the sunshine - and shadows will fall behind you. ".split("");
-            
-            maxDepth(100);
-
-            rules({
-                step : function() {
-                    glyphs({text: whitman, scale: 1.3});
-                    step({move: 1.0, pitch: 3.0, roll: 3.0, yaw: 5.0});
-                },
-            
-                msg : function() {
-                    step({move: 1.7});
-                },
-                
-                start : function() {
-                    camera({pitch: 20, yaw: 45,  move: 14});
-                
-                    for (var i = 0; i<20; i++) {
-                        cube();
-                        msg({pitch: rnd(180), yaw: rnd(180), material: rnd(mats)});
-                    }
-                } 
-            });
-            
-        </div>
-        
         <script src="js/lib/three.min.js"></script>
         <script src="js/lib/Detector.js"></script>
-<!--        <script src="js/lib/stats.min.js"></    script> -->
         <script src="js/lib/TrackballControls.js"></script>
-<!--        <script src="js/lib/THREEx.KeyboardState.js"></script> -->
         <script src="js/lib/THREEx.FullScreen.js"></script>
         <script src="js/lib/THREEx.WindowResize.js"></script>
-
+        <script src="js/lib/dat.gui.min.js"></script>
         <script src="js/lib/helvetiker_regular.typeface.js"></script>
-        
+   
         <script src="js/ELLY.js"></script>
         <script src="js/ELLY.Runner.js"></script>
 
         <script>
+            var examples = collectExamples();
+
+            var settings = { Script : examples[examples.length-1] };
+
+            var runner = new ELLY.Runner(document.body);
+
             window.onload = function() {
-                var codeId = "testText";
-
-                var ellyScript = document.getElementById(codeId).innerText;
-                if (ellyScript === undefined) {
-                    ellyScript = document.getElementById(codeId).textContent;
-                }
-
-                var runner = new ELLY.Runner(document.body);
-                runner.run(ellyScript);
+                setUpGUI();
+                setExample(settings.Script);
             };  
 
+            function setExample(theId) {
+                var ellyScript = document.getElementById(theId).innerText;
+                if (ellyScript === undefined) {
+                    ellyScript = document.getElementById(theId).textContent;
+                }
+
+                runner.run(ellyScript);
+            };
+
+
+            function setUpGUI() {
+                var gui = new dat.GUI();
+                var exCtrl = gui.add(settings, "Script", examples);
+                
+                exCtrl.onFinishChange(function(value) {
+                   setExample(value); 
+                });
+            };
+
+            function collectExamples() {
+                var exList = [];
+                
+                var exParent = document.getElementById("sampleSources");
+                var len = exParent.children.length;
+                for (var i = 0; i<len; i++) {
+                    var id = exParent.children[i].getAttribute("id");
+                    exList.push(id);
+                }
+                return exList;
+            };
+    
         </script>
     </body>
 </html>

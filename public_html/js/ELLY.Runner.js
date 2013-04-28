@@ -4,9 +4,7 @@ var ELLY = ELLY || {};
 
 ELLY.Runner = (function() {
     var that;
-    
-    console.debug(that);
-    
+        
     var runner = function(parentElement) {
         that = this;
         
@@ -27,22 +25,32 @@ ELLY.Runner = (function() {
         
         // CAMERA
         this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-        this.camera.position.set(-25, -10, 10);
-        this.camera.lookAt(0);
  
+
         // EVENTS
         THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
         THREEx.WindowResize(this.renderer, this.camera);
 
         // CONTROLS
-        this.controls = new THREE.TrackballControls(this.camera);
-    };
-
-    runner.prototype.run = function(script) {
+        this.controls = new THREE.TrackballControls(this.camera, this.container);
 
         // SCENE
         this.scene = new THREE.Scene();
+
+    };
+    
+   
+
+    runner.prototype.run = function(script) {
+        while (this.scene.children.length > 0) {
+            this.scene.remove(this.scene.children[0]);
+        }
+
         this.scene.add(this.camera);
+        this.camera.position.set(-25, -10, 10);
+        this.camera.lookAt(0);
+
+
 
         // LIGHT
         var light = new THREE.PointLight(0xffeeee, 1.3);
