@@ -135,7 +135,7 @@ ELLY.System = (function() {
         this.buildRules = false;
         this.buildPrefixCode();
         code = this.prefixCode + this.script + "; start();\n";
-        console.log(code);
+//        console.log(code);
         new Function(code).call(this);
 
         this.depth = 0;

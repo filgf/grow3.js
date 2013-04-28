@@ -8,6 +8,8 @@ ELLY.Runner = (function() {
     var runner = function(parentElement) {
         that = this;
         
+        this.isRendering = false;
+        
         var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
         var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
         
@@ -25,7 +27,6 @@ ELLY.Runner = (function() {
         
         // CAMERA
         this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
- 
 
         // EVENTS
         THREEx.FullScreen.bindKey({charCode: 'f'.charCodeAt(0)});
@@ -34,23 +35,20 @@ ELLY.Runner = (function() {
         // CONTROLS
         this.controls = new THREE.TrackballControls(this.camera, this.container);
 
-        // SCENE
-        this.scene = new THREE.Scene();
-
+        animate();
     };
     
    
 
     runner.prototype.run = function(script) {
-        while (this.scene.children.length > 0) {
-            this.scene.remove(this.scene.children[0]);
-        }
+        this.isRendering = false;
+
+        // SCENE WITH CAM
+        this.scene = new THREE.Scene();
 
         this.scene.add(this.camera);
         this.camera.position.set(-25, -10, 10);
         this.camera.lookAt(0);
-
-
 
         // LIGHT
         var light = new THREE.PointLight(0xffeeee, 1.3);
@@ -64,14 +62,18 @@ ELLY.Runner = (function() {
         this.elly = new ELLY.System(this.scene, script, this.camera);
         this.elly.trigger();
 
-        animate();
+        this.isRendering = true;
+
+//        console.debug(JSON.stringify(this.renderer.info));
 
     };
 
      var animate = function() {
         requestAnimationFrame(animate);
-        render();
-        update();
+        if (that.isRendering) {
+            render();
+            update();
+        }
     };
 
     var render = function() {
