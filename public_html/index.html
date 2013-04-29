@@ -5,20 +5,13 @@
         <title>[GROW3] Gallery</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <style>
-            body 
-            {
-                font-family: Monospace;
-                font-weight: bold;
-                background-color: #dddddd;
-                margin: 0px;
-                overflow: hidden;
-            }
-        </style>
+        <style>body { margin: 0px; overflow: hidden; }</style>
     </head>
     <body>
         <div id="sampleSources" style="display:none">
             <div id="sample1">
+                background(0x443333);
+                
                 var mat1 = new THREE.MeshPhongMaterial({color: 0xbbbbbb});
                 var mat2 = new THREE.MeshPhongMaterial({color: 0xddbbbb});
 
@@ -40,8 +33,8 @@
             </div>
 
             <div id="sample2">
-                var mat1 = new THREE.MeshPhongMaterial({color: 0xddccbb});
-                var mat2 = new THREE.MeshPhongMaterial({color: 0xccddbb});
+                var mat1 = new THREE.MeshPhongMaterial({color: 0xddaa77});
+                var mat2 = new THREE.MeshPhongMaterial({color: 0xaadd77});
 
                 maxDepth(120);
 
@@ -78,6 +71,7 @@
             </div>
 
             <div id="randomRule">
+                background(0x222222);
                 var mat1 = new THREE.MeshPhongMaterial({color: 0xddccbb});
                 var mat2 = new THREE.MeshPhongMaterial({color: 0xccddbb});
 
@@ -109,6 +103,7 @@
             </div>
 
             <div id="randomValue">
+                background(0xffffff);
                 var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
 
                 maxDepth(50);
@@ -155,7 +150,8 @@
             </div>
 
             <div id="testText">
-                var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+                background(0x555544);
+                var mats = [new THREE.MeshPhongMaterial({color: 0xaabbee}), new THREE.MeshPhongMaterial({color: 0xeeaabb}) ];
 
                 var whitman = "Keep your face always toward the sunshine - and shadows will fall behind you. ".split("");
 
@@ -174,7 +170,7 @@
                     start : function() {
                         camera({pitch: 20, yaw: 45,  move: 14});
 
-                        for (var i = 0; i<20; i++) {
+                        for (var i = 0; i<30; i++) {
                             cube();
                             msg({pitch: rnd(180), yaw: rnd(180), material: rnd(mats)});
                         }

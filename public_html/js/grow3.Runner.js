@@ -61,6 +61,7 @@ grow3.Runner = (function() {
         // GROW3
         this.g = new grow3.System(this.scene, script, this.camera);
         this.g.trigger();
+        this.renderer.setClearColorHex(this.g.backgroundColor);
 
         this.isRendering = true;
 

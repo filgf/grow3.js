@@ -16,6 +16,7 @@ X - Kamera: spezielle Transformation?
 
 - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (Rotation auf parent!?)
 
+- Hintergrund: Farbe, (Shader)
 - Lichtposition: spezielle Transformation?
 
 

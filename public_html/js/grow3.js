@@ -37,6 +37,8 @@ grow3.System = (function() {
 
         this.cameraObj = camera;
 
+        this.backgroundColor = 0xcccccc;
+
         this.buildRules = true;
         this.rule("cube", cubeFun);
         this.rule("glyphs", glyphsFun);
@@ -53,7 +55,7 @@ grow3.System = (function() {
 
     system.prototype.maxDepth = function(md) {
         this.mDepth = md;
-    }
+    };
 
     system.prototype.rule = function(name, func) {
 
@@ -169,7 +171,7 @@ grow3.System = (function() {
             }
         }
         return r;
-    }
+    };
 
 
 
@@ -193,8 +195,6 @@ grow3.System = (function() {
     };
 
     system.prototype.tV = system.prototype.transVert;
-
-
 
     /*
      * Change scale by factor amount
@@ -233,14 +233,19 @@ grow3.System = (function() {
 
     system.prototype.text = function(s) {
         this.state.text = s;
-    }
+    };
 
     system.prototype.textParam = function(o) {
         if (this.textParam !== o) {
             this.textParamId = undefined;
         }
         this.textParam = o;
-    }
+    };
+
+
+    system.prototype.background = function(col) {
+        this.backgroundColor = col;
+    };
 
     var cubeFun = function() {
         var cube = new THREE.Mesh(cubeGeometry, this.state.material);
@@ -248,7 +253,6 @@ grow3.System = (function() {
         this.state.objectProto.parent.add(cube);
     };
 
-    var glyphsCache = {};
 
     var centerX = function(geometry) {
         geometry.computeBoundingBox();
@@ -259,6 +263,8 @@ grow3.System = (function() {
 
         return offsetX;
     };
+
+    var glyphsCache = {};
 
     var glyphsFun = function() {
         var p = this.state.textParam;
