@@ -1,8 +1,8 @@
 // (C) Philipp Graf 2013
 
-var ELLY = ELLY || {};
+var grow3 = grow3 || {};
 
-ELLY.System = (function() {
+grow3.System = (function() {
     var standardMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
     State = function(parent) {
@@ -48,7 +48,7 @@ ELLY.System = (function() {
     system.prototype.constructor = system;
 
     system.prototype.toString = function() {
-        return "[ELLY.System]";
+        return "[grow3.System]";
     };
 
     system.prototype.maxDepth = function(md) {

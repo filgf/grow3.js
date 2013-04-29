@@ -2,7 +2,7 @@
 <!-- http://elly.lvps83-169-43-251.dedicated.hosteurope.de/ -->
 <html lang="en">
     <head>
-        <title>ELLY.js test</title>
+        <title>[GROW3] Gallery</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <style>
@@ -191,15 +191,15 @@
         <script src="js/lib/dat.gui.min.js"></script>
         <script src="js/lib/helvetiker_regular.typeface.js"></script>
    
-        <script src="js/ELLY.js"></script>
-        <script src="js/ELLY.Runner.js"></script>
+        <script src="js/grow3.js"></script>
+        <script src="js/grow3.Runner.js"></script>
 
         <script>
             var examples = collectExamples();
 
             var settings = { Script : examples[examples.length-1] };
 
-            var runner = new ELLY.Runner(document.body);
+            var runner = new grow3.Runner(document.body);
 
             window.onload = function() {
                 setUpGUI();
@@ -207,22 +207,23 @@
             };  
 
             function setExample(theId) {
-                var ellyScript = document.getElementById(theId).innerText;
-                if (ellyScript === undefined) {
-                    ellyScript = document.getElementById(theId).textContent;
+                var gScript = document.getElementById(theId).innerText;
+                if (gScript === undefined) {
+                    gScript = document.getElementById(theId).textContent;
                 }
 
-                runner.run(ellyScript);
+                runner.run(gScript);
             };
 
 
             function setUpGUI() {
                 var gui = new dat.GUI();
                 var exCtrl = gui.add(settings, "Script", examples);
-                
+
                 exCtrl.onFinishChange(function(value) {
                    setExample(value); 
                 });
+                
             };
 
             function collectExamples() {

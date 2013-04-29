@@ -9,8 +9,8 @@ Plan r01
   - allg. Mesh
   - X Text (X Caching)
 
-- Webseite/Showcase mit Liste
-- Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js / grow3D.js
+X - Webseite/Showcase mit Liste
+X - Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js / ****grow3.js****
 
 X - Kamera: spezielle Transformation?
 
@@ -35,3 +35,4 @@ Geplante Features
 - Debug/Single Step (pro Tiefe!)
 
 - Bessere Fehlerbehandlung, wie??
+- Linien Segmente aus umhüllendem Polygon (Linie/Spline)

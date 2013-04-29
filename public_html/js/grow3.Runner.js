@@ -1,8 +1,8 @@
 // (C) Philipp Graf
 
-var ELLY = ELLY || {};
+var grow3 = grow3 || {};
 
-ELLY.Runner = (function() {
+grow3.Runner = (function() {
     var that;
         
     var runner = function(parentElement) {
@@ -58,9 +58,9 @@ ELLY.Runner = (function() {
         light2.position.set(-10, -10, -10);
         this.scene.add(light2);
 
-        // ELLY
-        this.elly = new ELLY.System(this.scene, script, this.camera);
-        this.elly.trigger();
+        // GROW3
+        this.g = new grow3.System(this.scene, script, this.camera);
+        this.g.trigger();
 
         this.isRendering = true;
 
