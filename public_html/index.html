@@ -94,7 +94,7 @@
                     ],
 
                     start : function() {
-                        for (var i=0; i<20; i++) {
+                        for (var i=0; i<35; i++) {
                             seg();
                         }
                     }
@@ -159,21 +159,37 @@
 
                 rules({
                     step : function() {
-                        glyphs({text: whitman, scale: 1.3});
-                        step({move: 1.0, pitch: 3.0, roll: 3.0, yaw: 5.0});
+                        glyphs(text("X").scale(1.3));
+                        step(move(1.0).pitch(3.0).roll(3.0).yaw(5.0));
                     },
 
                     msg : function() {
-                        step({move: 1.7});
+                        step(move(1.7));
                     },
 
                     start : function() {
-                        camera({pitch: 20, yaw: 45,  move: 14});
+                        camera(pitch(20).yaw(45).move(14));
 
                         for (var i = 0; i<30; i++) {
-                            cube();
-                            msg({pitch: rnd(180), yaw: rnd(180), material: rnd(mats)});
+                            cube(move(10.0));
+                            msg(pitch(rnd(180)).yaw(rnd(180)).material(rnd(mats)));
                         }
+                    } 
+                });
+
+            </div>
+            <div id="helloGrow3">
+                rules({
+                    r1 : function() {
+                        cube(pitch(30));
+                    },
+
+                    start : function() {
+                        camera(pitch(180).yaw(45).move(14));
+
+                        cube();
+                        r1(move(2.0).scale(0.9));
+                        
                     } 
                 });
 

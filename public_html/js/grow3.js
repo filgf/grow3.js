@@ -59,26 +59,31 @@ grow3.System = (function() {
 
     system.prototype.rule = function(name, func) {
 
-        this[name] = function(transforms, isRoot) {
+        this[name] = function(dummy, isRoot) {
             if (this.buildRules === true) {
                 return this;
             }
 
             if (isRoot === true) {
-                saveState = this.state;
+                var saveState = this.state;
                 this.state = new State(saveState);
                 saveState.objectProto.add(this.state.objectProto);
-                this.evalTransforms(transforms);
+                
+//                this.evalTransforms(transforms);
+
 
                 if (typeof(func) === "function") {
                     func.call(this);
-                } else {        // TODO: Check type
+                } else {        // TODO: Check if array
                     var index = Math.floor(Math.random() * func.length);
                     func[index].call(this);
                 }
-                this.state = saveState;
+//                this.state = saveState;
             } else if (this.depth < this.mDepth) {
-                this.backlogBuild.push([name, transforms, this.state]);
+                this.backlogBuild.push([name, this.state]);
+                
+                
+                
             }
             return this;            // method chain
         };
@@ -90,23 +95,6 @@ grow3.System = (function() {
         }
     };
 
-    system.prototype.evalTransforms = function(transforms) {
-        for (t in transforms) {
-            if (t in this) {
-                var trans = transforms[t];
-                if (Array.isArray(trans)) {
-                    if (trans.startDepth === undefined) {
-                        trans.startDepth = this.depth;
-                    }
-                    this[t].call(this, trans[(this.depth - trans.startDepth) % trans.length]);
-                } else {
-                    this[t].call(this, trans);
-                }
-            } else {
-                console.warn("Skipping unknown transform \"" + t + "\".");
-            }
-        }
-    };
 
     system.prototype.buildPrefixCode = function() {
         this.prefixCode = "var that = this;\n";
@@ -150,8 +138,8 @@ grow3.System = (function() {
             while (this.backlog.length > 0) {
 //                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
                 var entry = this.backlog.shift();
-                this.state = entry[2];
-                this[entry[0]].call(this, entry[1], true);
+                this.state = entry[1];
+                this[entry[0]].call(this, this, true);
             }
 
         } while (this.backlogBuild.length > 0);
@@ -173,74 +161,86 @@ grow3.System = (function() {
         return r;
     };
 
-
+    var buildTransform = function(fun) {
+        return function(param) {
+            if (Array.isArray(param)) {
+                if (param.startDepth === undefined) {
+                    param.startDepth = this.depth;
+                }
+                fun.call(this, param[(this.depth - param.startDepth) % param.length]);
+            } else {
+                fun.call(this, param);
+            }
+            return this;
+        };
+    };
 
     /*
      * Move forward (scale sensitive)
      */
-    system.prototype.move = function(amount) {
+    system.prototype.move = buildTransform(function(amount) {
         this.state.objectProto.position.x += amount;
-    };
+    });
 
     system.prototype.m = system.prototype.move;
 
-    system.prototype.transHoriz = function(amount) {
+    system.prototype.transHoriz = buildTransform(function(amount) {
         this.state.objectProto.position.y += amount;
-    };
+    });
 
     system.prototype.tH = system.prototype.transHoriz;
 
-    system.prototype.transVert = function(amount) {
+    system.prototype.transVert = buildTransform(function(amount) {
         this.state.objectProto.position.z += amount;
-    };
+    });
 
     system.prototype.tV = system.prototype.transVert;
 
     /*
      * Change scale by factor amount
      */
-    system.prototype.scale = function(amount) {
+    system.prototype.scale = buildTransform(function(amount) {
         this.state.objectProto.scale.multiplyScalar(amount);
-    };
+    });
 
     system.prototype.s = system.prototype.scale;
 
     // pitch roll yaw
-    system.prototype.roll = function(angle) {
+    system.prototype.roll = buildTransform(function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.x += angle;
-    };
+    });
 
     system.prototype.rX = system.prototype.roll;
 
-    system.prototype.yaw = function(angle) {
+    system.prototype.yaw = buildTransform(function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.y += angle;
-    };
+    });
 
     system.prototype.rY = system.prototype.yaw;
 
-    system.prototype.pitch = function(angle) {
+    system.prototype.pitch = buildTransform(function(angle) {
         angle = angle * Math.PI / 180.0;
         this.state.objectProto.rotation.z += angle;
-    };
+    });
 
     system.prototype.rZ = system.prototype.pitch;
 
-    system.prototype.material = function(mat) {
+    system.prototype.material = buildTransform(function(mat) {
         this.state.material = mat;
-    };
+    });
 
-    system.prototype.text = function(s) {
+    system.prototype.text = buildTransform(function(s) {
         this.state.text = s;
-    };
+    });
 
-    system.prototype.textParam = function(o) {
+    system.prototype.textParam = buildTransform(function(o) {
         if (this.textParam !== o) {
             this.textParamId = undefined;
         }
         this.textParam = o;
-    };
+    });
 
 
     system.prototype.background = function(col) {
