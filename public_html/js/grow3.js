@@ -3,9 +3,9 @@
 var grow3 = grow3 || {};
 
 
-grow3.State = (function() {    
+grow3.State = (function() {
     var standardMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
-    
+
     var state = function(parent, sys) {
         this.objectProto = new THREE.Object3D();
         this.txt = "O";
@@ -19,9 +19,9 @@ grow3.State = (function() {
             this.textParam = parent.textParam;
         }
     };
-    
+
     state.prototype.constructor = state;
-    
+
     state.prototype.clone = function() {
         var o = new grow3.State(this, this.sys);
         this.objectProto.clone(o.objectProto);
@@ -42,7 +42,7 @@ grow3.State = (function() {
         };
     };
 
-   /*
+    /*
      * Move forward (scale sensitive)
      */
     state.prototype.move = buildTransform(function(amount) {
@@ -116,7 +116,7 @@ grow3.State = (function() {
 })();
 
 grow3.System = (function() {
- 
+
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
 
     var system = function(scene, script, camera /* optional */) {
@@ -134,7 +134,7 @@ grow3.System = (function() {
         this.state = this.rollback = new grow3.State(undefined, this);
         this.parent = new grow3.State(undefined, this);
         this.parent.objectProto = scene;
-        
+
         this.scene.add(this.state.objectProto);
 
         this.cameraObj = camera;
@@ -167,13 +167,9 @@ grow3.System = (function() {
             }
 
             if (isRoot === true) {
-                // jetziger State zum Parent hinzu
-                this.parent = this.state;
+                this.parent = this.state;                                  // aktueller state -> parent f. folgende 
                 this.rollback = new grow3.State(this.state, this);         // Vorlage für Rollbacks
-                this.state = this.rollback.clone() ;  // Nächster State (f. Unterfunkt)!
-                
-                
-                // rollbackpoint + neue ebene
+                this.state = this.rollback.clone();                        // Nächster State (f. Unterfunkt)!
 
                 if (typeof(func) === "function") {
                     func.call(this);
@@ -182,10 +178,10 @@ grow3.System = (function() {
                     func[index].call(this);
                 }
             } else if (this.depth < this.mDepth) {
-                this.backlogBuild.push([name, this.state]);  // inkl. Trafo ausgewertet
+                this.backlogBuild.push([name, this.state]);                 // inkl. Trafo ausgewertet
                 this.parent.objectProto.add(this.state.objectProto);
-                
-                this.state = this.rollback.clone();               // Wieder Vorlage (rollback)
+
+                this.state = this.rollback.clone();                         // Wieder Vorlage (rollback)
             }
             return this;            // method chain
         };
@@ -197,7 +193,6 @@ grow3.System = (function() {
         }
     };
 
-
     system.prototype.buildPrefixCode = function() {
         this.prefixCode = "var that = this;\n";
         for (var id in this) {
@@ -208,7 +203,7 @@ grow3.System = (function() {
             } catch (err) {
             }    // ignore inaccessible
         }
-        
+
         for (var id in grow3.State.prototype) {
             try {
                 if (typeof(grow3.State.prototype[id]) === "function") {
@@ -217,7 +212,7 @@ grow3.System = (function() {
             } catch (err) {
             }    // ignore inaccessible
         }
-  
+
     };
 
     /*
@@ -274,9 +269,6 @@ grow3.System = (function() {
     };
 
 
- 
-
-
     system.prototype.background = function(col) {
         this.backgroundColor = col;
     };
@@ -331,8 +323,6 @@ grow3.System = (function() {
         }
     };
 
-
     return system;
-
 })();
 

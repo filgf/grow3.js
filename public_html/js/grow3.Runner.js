@@ -35,6 +35,8 @@ grow3.Runner = (function() {
         // CONTROLS
         this.controls = new THREE.TrackballControls(this.camera, this.container);
 
+   //     this.g = null;
+
         animate();
     };
     
@@ -61,7 +63,6 @@ grow3.Runner = (function() {
         // GROW3
         this.g = new grow3.System(this.scene, script, this.camera);
         this.g.trigger();
-        this.renderer.setClearColorHex(this.g.backgroundColor);
 
         this.isRendering = true;
 
@@ -78,6 +79,7 @@ grow3.Runner = (function() {
     };
 
     var render = function() {
+        that.renderer.setClearColor(that.g.backgroundColor);
         that.renderer.render(that.scene, that.camera);
     };
     

@@ -14,7 +14,8 @@ X - Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js 
 
 X - Kamera: spezielle Transformation?
 
-- Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (Rotation auf parent!?)
+- Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (Rotation auf parent!? Quternions?)
+- Bug?: Camera korrekt?
 
 - Hintergrund: Farbe, (Shader)
 - Lichtposition: spezielle Transformation?
