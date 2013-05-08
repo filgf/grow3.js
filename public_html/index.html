@@ -142,7 +142,7 @@
 
                     start : function() {
                         for (var z = -5; z < 5; z++) {
-                            quad(tV(z).material(mats[(z+5)%2]));
+                            quad(tV(z).material(select(mats, z)));
                         }
                     } 
                 });

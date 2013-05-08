@@ -1,6 +1,5 @@
 Plan r01
 ========
-- Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe, Index)
 
 - Mehr Objekttypen: 
   - Kugel
@@ -8,11 +7,6 @@ Plan r01
   - Pyramide
   - allg. Mesh
   - X Text (X Caching)
-
-X - Webseite/Showcase mit Liste
-X - Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js / ****grow3.js****
-
-X - Kamera: spezielle Transformation?
 
 - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (Rotation auf parent!? Quternions?)
 - Bug?: Camera korrekt?
@@ -26,8 +20,11 @@ Done r01
 X - Random selection of rules (Funktionslisten)
 X - Random attributes (rnd - Methode)
 X - Transformationen: translateHorizontal, translateVertical
-
 X - Extrahieren ELLY.Runner.js (init etc.)
+X - Webseite/Showcase mit Liste
+X - Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js / ****grow3.js****
+X - Kamera: spezielle Transformation?
+X - Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe -> array als param, X Index -> select-Fkt)
 
 
 Geplante Features

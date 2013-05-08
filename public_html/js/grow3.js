@@ -2,7 +2,6 @@
 
 var grow3 = grow3 || {};
 
-
 grow3.State = (function() {
     var standardMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
@@ -268,6 +267,12 @@ grow3.System = (function() {
         return r;
     };
 
+    system.prototype.select = function(arr, index) {
+        var size = arr.length;
+        var i = index % size;
+        i =  i<0 ? i+size : i;
+        return arr[i];
+    };
 
     system.prototype.background = function(col) {
         this.backgroundColor = col;
