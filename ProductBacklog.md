@@ -14,6 +14,7 @@ Plan r01
 - Hintergrund: Farbe, (Shader)
 - Lichtposition: spezielle Transformation?
 
+- Evt Selektion in Arrays (select, rnd, default) neu organisieren
 
 Done r01
 ========

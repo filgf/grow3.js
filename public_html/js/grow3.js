@@ -7,6 +7,8 @@ grow3.State = (function() {
 
     var state = function(parent, sys) {
         this.objectProto = new THREE.Object3D();
+        this.objectProto.matrixAutoUpdate = false;
+        
         this.txt = "O";
         this.textParamId = undefined;
         this.sys = sys;
@@ -44,20 +46,28 @@ grow3.State = (function() {
     /*
      * Move forward (scale sensitive)
      */
+    var trafo4 = new THREE.Matrix4();
+    
     state.prototype.move = buildTransform(function(amount) {
-        this.objectProto.position.x += amount;
+        trafo4.makeTranslation(amount, 0, 0);
+        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
+//        this.objectProto.position.x += amount;
     });
 
     state.prototype.m = state.prototype.move;
 
     state.prototype.transHoriz = buildTransform(function(amount) {
-        this.objectProto.position.y += amount;
+        trafo4.makeTranslation(0, amount, 0);
+        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
+//        this.objectProto.position.y += amount;
     });
 
     state.prototype.tH = state.prototype.transHoriz;
 
     state.prototype.transVert = buildTransform(function(amount) {
-        this.objectProto.position.z += amount;
+        trafo4.makeTranslation(0, 0, amount);
+        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
+//        this.objectProto.position.z += amount;
     });
 
     state.prototype.tV = state.prototype.transVert;
@@ -66,7 +76,9 @@ grow3.State = (function() {
      * Change scale by factor amount
      */
     state.prototype.scale = buildTransform(function(amount) {
-        this.objectProto.scale.multiplyScalar(amount);
+        trafo4.makeScale(amount, amount, amount);
+        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
+//        this.objectProto.scale.multiplyScalar(amount);
     });
 
     state.prototype.s = state.prototype.scale;
@@ -74,21 +86,27 @@ grow3.State = (function() {
     // pitch roll yaw
     state.prototype.roll = buildTransform(function(angle) {
         angle = angle * Math.PI / 180.0;
-        this.objectProto.rotation.x += angle;
+        trafo4.makeRotationX(angle);
+        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
+//        this.objectProto.rotation.x += angle;
     });
 
     state.prototype.rX = state.prototype.roll;
 
     state.prototype.yaw = buildTransform(function(angle) {
         angle = angle * Math.PI / 180.0;
-        this.objectProto.rotation.y += angle;
+        trafo4.makeRotationY(angle);
+        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
+//        this.objectProto.rotation.y += angle;
     });
 
     state.prototype.rY = state.prototype.yaw;
 
     state.prototype.pitch = buildTransform(function(angle) {
         angle = angle * Math.PI / 180.0;
-        this.objectProto.rotation.z += angle;
+        trafo4.makeRotationZ(angle);
+        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
+//        this.objectProto.rotation.z += angle;
     });
 
     state.prototype.rZ = state.prototype.pitch;
@@ -324,6 +342,7 @@ grow3.System = (function() {
             }
             this.parent.objectProto.clone(this.cameraObj);  // update cam with trafo
             this.cameraObj.lookAt(0);
+//            this.cameraObj.matrixAutoUpdate = true;
             this.parent.objectProto.parent.add(this.cameraObj);
         }
     };
