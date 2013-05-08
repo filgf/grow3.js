@@ -8,13 +8,13 @@ Plan r01
   - allg. Mesh
   - X Text (X Caching)
 
-- Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (Rotation auf parent!? Quternions?)
-- Bug?: Camera korrekt?
+- Bug?: camera() defekt!
 
 - Hintergrund: Farbe, (Shader)
 - Lichtposition: spezielle Transformation?
 
 - Evt Selektion in Arrays (select, rnd, default) neu organisieren
+- isLeaf()-Funktion / depth()-Funktion
 
 Done r01
 ========
@@ -26,6 +26,7 @@ X - Webseite/Showcase mit Liste
 X - Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js / ****grow3.js****
 X - Kamera: spezielle Transformation?
 X - Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe -> array als param, X Index -> select-Fkt)
+X - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (TRafos direkt auf MAtrix!)
 
 
 Geplante Features
@@ -34,5 +35,6 @@ Geplante Features
 - Debug/Anzeigen von lokalen Koordinaten + Scale + Tiefe (Transparenz)
 - Debug/Single Step (pro Tiefe!)
 
+- Unterstützung für Materialien / Shader?
 - Bessere Fehlerbehandlung, wie??
 - Linien Segmente aus umhüllendem Polygon (Linie/Spline)
