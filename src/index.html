@@ -45,7 +45,7 @@
 
                     spiral : function() {
                          for (var j=0; j<360; j+=0.5) {
-                            spiralElement(roll(j*6).yaw(j*0.5)); 
+                            spiralElement(yaw(j*0.5).roll(j*6));
                         }
                     },
 

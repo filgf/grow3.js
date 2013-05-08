@@ -149,6 +149,8 @@ grow3.System = (function() {
         this.depth = 0;
 
         this.state = this.rollback = new grow3.State(undefined, this);
+        this.state.objectProto.matrixAutoUpdate = true;
+
         this.parent = new grow3.State(undefined, this);
         this.parent.objectProto = scene;
 
@@ -342,8 +344,9 @@ grow3.System = (function() {
             }
             this.parent.objectProto.clone(this.cameraObj);  // update cam with trafo
             this.cameraObj.lookAt(0);
-//            this.cameraObj.matrixAutoUpdate = true;
-            this.parent.objectProto.parent.add(this.cameraObj);
+            this.cameraObj.matrixAutoUpdate = true;
+//            this.parent.objectProto.parent.add(this.cameraObj);
+            this.scene.add(this.cameraObj);
         }
     };
 
