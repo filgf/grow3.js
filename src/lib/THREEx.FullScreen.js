@@ -6,7 +6,10 @@
 //   [webkit nightly](http://peter.sh/2011/01/javascript-full-screen-api-navigation-timing-and-repeating-css-gradients/) and
 //   [chrome stable](http://updates.html5rocks.com/2011/10/Let-Your-Content-Do-the-Talking-Fullscreen-API).
 
+// 
 // # Code
+
+//
 
 /** @namespace */
 var THREEx		= THREEx 		|| {};
@@ -68,13 +71,13 @@ THREEx.FullScreen.cancel	= function()
 	}
 }
 
+
 // internal functions to know which fullscreen API implementation is available
 THREEx.FullScreen._hasWebkitFullScreen	= 'webkitCancelFullScreen' in document	? true : false;	
 THREEx.FullScreen._hasMozFullScreen	= 'mozCancelFullScreen' in document	? true : false;	
 
 /**
  * Bind a key to renderer screenshot
- * usage: THREEx.FullScreen.bindKey({ charCode : 'a'.charCodeAt(0) }); 
 */
 THREEx.FullScreen.bindKey	= function(opts){
 	opts		= opts		|| {};
@@ -90,13 +93,18 @@ THREEx.FullScreen.bindKey	= function(opts){
 		}		
 	}
 
+	// callback to handle keypress
 	var onKeyPress	= function(event){
+		// return now if the KeyPress isnt for the proper charCode
 		if( event.which !== charCode )	return;
+		// toggle fullscreen
 		toggle();
 	}.bind(this);
 
+	// listen to keypress
+	// NOTE: for firefox it seems mandatory to listen to document directly
 	document.addEventListener('keypress', onKeyPress, false);
-
+	// listen to dblclick
 	dblclick && document.addEventListener('dblclick', toggle, false);
 
 	return {
