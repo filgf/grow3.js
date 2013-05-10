@@ -5,13 +5,12 @@ var grow3 = grow3 || {};
 grow3.State = (function() {
     var standardMaterial = new THREE.MeshPhongMaterial({color: 0xcccccc});
 
-    var state = function(parent, sys) {
+    var state = function(parent) {
         this.objectProto = new THREE.Object3D();
         this.objectProto.matrixAutoUpdate = false;
         
         this.txt = "O";
         this.textParamId = undefined;
-        this.sys = sys;
         if (parent === undefined) {
             this.mat = standardMaterial;
             this.textParam = {size: 1.0, height: 0.3, curveSegments: 2, font: "helvetiker"};
@@ -20,7 +19,6 @@ grow3.State = (function() {
             this.textParam = parent.textParam;
         }
     };
-
     state.prototype.constructor = state;
 
     state.prototype.clone = function() {
@@ -29,107 +27,7 @@ grow3.State = (function() {
         return o;
     };
 
-    var buildTransform = function(fun) {
-        return function(param) {
-            if (Array.isArray(param)) {
-                if (param.startDepth === undefined) {
-                    param.startDepth = this.sys.depth;
-                }
-                fun.call(this, param[(this.sys.depth - param.startDepth) % param.length]);
-            } else {
-                fun.call(this, param);
-            }
-            return this;
-        };
-    };
-
-    /*
-     * Move forward (scale sensitive)
-     */
-    var trafo4 = new THREE.Matrix4();
-    
-    state.prototype.move = buildTransform(function(amount) {
-        trafo4.makeTranslation(amount, 0, 0);
-        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
-//        this.objectProto.position.x += amount;
-    });
-
-    state.prototype.m = state.prototype.move;
-
-    state.prototype.transHoriz = buildTransform(function(amount) {
-        trafo4.makeTranslation(0, amount, 0);
-        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
-//        this.objectProto.position.y += amount;
-    });
-
-    state.prototype.tH = state.prototype.transHoriz;
-
-    state.prototype.transVert = buildTransform(function(amount) {
-        trafo4.makeTranslation(0, 0, amount);
-        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
-//        this.objectProto.position.z += amount;
-    });
-
-    state.prototype.tV = state.prototype.transVert;
-
-    /*
-     * Change scale by factor amount
-     */
-    state.prototype.scale = buildTransform(function(amount) {
-        trafo4.makeScale(amount, amount, amount);
-        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
-//        this.objectProto.scale.multiplyScalar(amount);
-    });
-
-    state.prototype.s = state.prototype.scale;
-
-    // pitch roll yaw
-    state.prototype.roll = buildTransform(function(angle) {
-        angle = angle * Math.PI / 180.0;
-        trafo4.makeRotationX(angle);
-        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
-//        this.objectProto.rotation.x += angle;
-    });
-
-    state.prototype.rX = state.prototype.roll;
-
-    state.prototype.yaw = buildTransform(function(angle) {
-        angle = angle * Math.PI / 180.0;
-        trafo4.makeRotationY(angle);
-        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
-//        this.objectProto.rotation.y += angle;
-    });
-
-    state.prototype.rY = state.prototype.yaw;
-
-    state.prototype.pitch = buildTransform(function(angle) {
-        angle = angle * Math.PI / 180.0;
-        trafo4.makeRotationZ(angle);
-        this.objectProto.matrix.multiplyMatrices(trafo4, this.objectProto.matrix);
-//        this.objectProto.rotation.z += angle;
-    });
-
-    state.prototype.rZ = state.prototype.pitch;
-
-    state.prototype.material = buildTransform(function(mat) {
-        this.mat = mat;
-    });
-
-    state.prototype.text = buildTransform(function(s) {
-        this.txt = s;
-    });
-
-    state.prototype.textParam = buildTransform(function(o) {
-        if (this.textParam !== o) {
-            this.textParamId = undefined;
-        }
-        this.textParam = o;
-    });
-
-
     return state;
-
-
 })();
 
 grow3.System = (function() {
@@ -148,10 +46,10 @@ grow3.System = (function() {
         this.mDepth = 20;
         this.depth = 0;
 
-        this.state = this.rollback = new grow3.State(undefined, this);
+        this.state = this.rollback = new grow3.State(undefined);
         this.state.objectProto.matrixAutoUpdate = true;
 
-        this.parent = new grow3.State(undefined, this);
+        this.parent = new grow3.State(undefined);
         this.parent.objectProto = scene;
 
         this.scene.add(this.state.objectProto);
@@ -187,7 +85,7 @@ grow3.System = (function() {
 
             if (isRoot === true) {
                 this.parent = this.state;                                  // aktueller state -> parent f. folgende 
-                this.rollback = new grow3.State(this.state, this);         // Vorlage für Rollbacks
+                this.rollback = new grow3.State(this.state);               // Vorlage für Rollbacks
                 this.state = this.rollback.clone();                        // Nächster State (f. Unterfunkt)!
 
                 if (typeof(func) === "function") {
@@ -349,6 +247,108 @@ grow3.System = (function() {
             this.scene.add(this.cameraObj);
         }
     };
+
+
+    /*
+     *********** Modifiers
+     */
+    var buildTransform = function(fun) {
+        return function(param) {
+            if (Array.isArray(param)) {
+                if (param.startDepth === undefined) {
+                    param.startDepth = this.depth;
+                }
+                fun.call(this, param[(this.depth - param.startDepth) % param.length]);
+            } else {
+                fun.call(this, param);
+            }
+            return this;
+        };
+    };
+
+    /*
+     * Move forward (scale sensitive)
+     */
+    var trafo4 = new THREE.Matrix4();
+
+    system.prototype.move = buildTransform(function(amount) {
+        trafo4.makeTranslation(amount, 0, 0);
+        this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
+//        this.state.objectProto.position.x += amount;
+    });
+
+    system.prototype.m = system.prototype.move;
+
+    system.prototype.transHoriz = buildTransform(function(amount) {
+        trafo4.makeTranslation(0, amount, 0);
+        this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
+//        this.state.objectProto.position.y += amount;
+    });
+
+    system.prototype.tH = system.prototype.transHoriz;
+
+    system.prototype.transVert = buildTransform(function(amount) {
+        trafo4.makeTranslation(0, 0, amount);
+        this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
+//        this.state.objectProto.position.z += amount;
+    });
+
+    system.prototype.tV = system.prototype.transVert;
+
+    /*
+     * Change scale by factor amount
+     */
+    system.prototype.scale = buildTransform(function(amount) {
+        trafo4.makeScale(amount, amount, amount);
+        this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
+//        this.state.objectProto.scale.multiplyScalar(amount);
+    });
+
+    system.prototype.s = system.prototype.scale;
+
+    // pitch roll yaw
+    system.prototype.roll = buildTransform(function(angle) {
+        angle = angle * Math.PI / 180.0;
+        trafo4.makeRotationX(angle);
+        this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
+//        this.state.objectProto.rotation.x += angle;
+    });
+
+    system.prototype.rX = system.prototype.roll;
+
+    system.prototype.yaw = buildTransform(function(angle) {
+        angle = angle * Math.PI / 180.0;
+        trafo4.makeRotationY(angle);
+        this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
+//        this.state.objectProto.rotation.y += angle;
+    });
+
+    system.prototype.rY = system.prototype.yaw;
+
+    system.prototype.pitch = buildTransform(function(angle) {
+        angle = angle * Math.PI / 180.0;
+        trafo4.makeRotationZ(angle);
+        this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
+//        this.state.objectProto.rotation.z += angle;
+    });
+
+    system.prototype.rZ = system.prototype.pitch;
+
+    system.prototype.material = buildTransform(function(mat) {
+        this.state.mat = mat;
+    });
+
+    system.prototype.text = buildTransform(function(s) {
+        this.state.txt = s;
+    });
+
+    system.prototype.textParam = buildTransform(function(o) {
+        if (this.state.textParam !== o) {
+            this.state.textParamId = undefined;
+        }
+        this.state.textParam = o;
+    });
+
 
     return system;
 })();
