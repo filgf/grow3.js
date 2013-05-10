@@ -72,7 +72,7 @@ grow3.System = (function() {
 
     system.prototype.rule = function(func) {
 
-        var fnew = function(theThis /* unused */, isRoot) {
+        var fnew = function(isRoot) {
 
             if (isRoot === true) {
                 this.parent = this.state;                                  // aktueller state -> parent f. folgende 
@@ -114,9 +114,6 @@ grow3.System = (function() {
             this.script.call(this, this);
         }
 
-
-
-
         start = start || "start";
         this.scene.add(this.state.objectProto);
 
@@ -134,7 +131,7 @@ grow3.System = (function() {
 //                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
                 var entry = this.backlog.shift();
                 this.state = entry[1];
-                entry[0].call(this, this, true);
+                entry[0].call(this, true);
             }
 
         } while (this.backlogBuild.length > 0);
