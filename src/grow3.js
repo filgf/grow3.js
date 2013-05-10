@@ -9,7 +9,7 @@ grow3.State = (function() {
         this.objectProto = new THREE.Object3D();
         this.objectProto.matrixAutoUpdate = false;
         
-        this.txt = "O";
+        this.txt = "";
         this.textParamId = undefined;
         if (parent === undefined) {
             this.mat = standardMaterial;
@@ -34,11 +34,9 @@ grow3.System = (function() {
 
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
 
-    var system = function(scene, script, camera /* optional */) {
+    var system = function(scene, script /* optional */, camera /* optional */) {
         this.scene = scene;
         this.script = script;
-
-        this.prefixCode = "";
 
         this.backlog = [];
         this.backlogBuild = [];
@@ -58,11 +56,7 @@ grow3.System = (function() {
 
         this.backgroundColor = 0xcccccc;
 
-        this.buildRules = true;
-        this.rule("cube", cubeFun);
-        this.rule("glyphs", glyphsFun);
 
-        this.rule("camera", cameraFun);
 
     };
 
@@ -76,12 +70,9 @@ grow3.System = (function() {
         this.mDepth = md;
     };
 
-    system.prototype.rule = function(name, func) {
+    system.prototype.rule = function(func) {
 
-        this[name] = function(theThis /* unused */, isRoot) {
-            if (this.buildRules === true) {
-                return this;
-            }
+        var fnew = function(theThis /* unused */, isRoot) {
 
             if (isRoot === true) {
                 this.parent = this.state;                                  // aktueller state -> parent f. folgende 
@@ -95,41 +86,23 @@ grow3.System = (function() {
                     func[index].call(this);
                 }
             } else if (this.depth < this.mDepth) {
-                this.backlogBuild.push([name, this.state]);                 // inkl. Trafo ausgewertet
+                this.backlogBuild.push([fnew, this.state]);                 // inkl. Trafo ausgewertet
                 this.parent.objectProto.add(this.state.objectProto);
 
                 this.state = this.rollback.clone();                         // Wieder Vorlage (rollback)
             }
-            return this;            // method chain
+            return this;
         };
+
+        return fnew;
     };
+
+
 
     system.prototype.rules = function(map) {
         for (var e in map) {
-            this.rule(e, map[e]);
+            this[e] = this.rule(map[e]);
         }
-    };
-
-    system.prototype.buildPrefixCode = function() {
-        this.prefixCode = "var that = this;\n";
-        for (var id in this) {
-            try {
-                if (typeof(this[id]) === "function") {
-                    this.prefixCode += "var " + id + " = function() { return that." + id + ".apply(that, arguments); }\n";
-                }
-            } catch (err) {
-            }    // ignore inaccessible
-        }
-
-        for (var id in grow3.State.prototype) {
-            try {
-                if (typeof(grow3.State.prototype[id]) === "function") {
-                    this.prefixCode += "var " + id + " = function() { return that.state." + id + ".apply(that.state, arguments); }\n";
-                }
-            } catch (err) {
-            }    // ignore inaccessible
-        }
-
     };
 
     /*
@@ -137,22 +110,20 @@ grow3.System = (function() {
      */
     system.prototype.trigger = function(start) {
 
+        if (this.script !== undefined) {
+            this.script.call(this, this);
+        }
+
+
+
+
         start = start || "start";
         this.scene.add(this.state.objectProto);
 
-        this.buildRules = true;
-        this.buildPrefixCode();
-        var code = this.prefixCode + this.script;
-        var f = new Function(code);
-        f.call(this);
-
-        this.buildRules = false;
-        this.buildPrefixCode();
-        code = this.prefixCode + this.script + "; start();\n";
-//        console.log(code);
-        new Function(code).call(this);
-
         this.depth = 0;
+
+        this.backlogBuild.push([this[start], this.state]);
+  //      this[start].call(this, this, false);
 
         do {
             this.depth++;
@@ -163,7 +134,7 @@ grow3.System = (function() {
 //                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
                 var entry = this.backlog.shift();
                 this.state = entry[1];
-                this[entry[0]].call(this, this, true);
+                entry[0].call(this, this, true);
             }
 
         } while (this.backlogBuild.length > 0);
@@ -196,11 +167,13 @@ grow3.System = (function() {
         this.backgroundColor = col;
     };
 
-    var cubeFun = function() {
+    var rule = system.prototype.rule;
+
+    system.prototype.cube = rule(function() {
         var cube = new THREE.Mesh(cubeGeometry, this.state.mat);
         this.parent.objectProto.clone(cube);
         this.parent.objectProto.parent.add(cube);
-    };
+    });
 
 
     var centerX = function(geometry) {
@@ -215,7 +188,7 @@ grow3.System = (function() {
 
     var glyphsCache = {};
 
-    var glyphsFun = function() {
+    system.prototype.glyphs = rule(function() {
         var p = this.parent.textParam;
         if (this.parent.textParamId === undefined) {                                         // Font change -> check if cache exists & build
             this.parent.textParamId = p.font + ":" + p.size + ":" + p.height + ":" + p.curveSegments;
@@ -233,9 +206,9 @@ grow3.System = (function() {
             this.parent.objectProto.clone(glyph);
             this.parent.objectProto.parent.add(glyph);
         }
-    };
+    });
 
-    var cameraFun = function() {
+    system.prototype.camera = rule(function() {
         if (this.cameraObj !== undefined) {
             if (this.cameraObj.parent !== undefined) {
                 this.cameraObj.parent.remove(this.cameraObj);
@@ -246,8 +219,11 @@ grow3.System = (function() {
 //            this.parent.objectProto.parent.add(this.cameraObj);
             this.scene.add(this.cameraObj);
         }
-    };
+    });
 
+//    this.rule("glyphs", glyphsFun);
+
+  //  this.rule("camera", cameraFun);
 
     /*
      *********** Modifiers
@@ -348,7 +324,6 @@ grow3.System = (function() {
         }
         this.state.textParam = o;
     });
-
 
     return system;
 })();

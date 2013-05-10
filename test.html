@@ -5,7 +5,7 @@
         <title>[GROW3] Test</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <style>body { margin: 0px; overflow: hidden; }</style>
+        <style>body { margin: 0; overflow: hidden; }</style>
     </head>
     <body>
         <div id="sampleSources" style="display:none">
@@ -47,49 +47,43 @@
 <!--        <script src="build/grow3.min.js"></script> -->
 
         <script>
-            var examples = collectExamples();
 
-            var settings = { Script : examples[examples.length-1] };
 
-            var runner = new grow3.Runner(document.body);
+            var testFun = function(g) {
+                with(g) {
+                    background(0x443333);
+
+                    var mat1 = new THREE.MeshPhongMaterial({color: 0xbbbbbb});
+                    var mat2 = new THREE.MeshPhongMaterial({color: 0xddbbbb});
+
+                    maxDepth(100);
+
+                    g.spiral = rule(function(){
+                        cube(material(mat1).scale(1.2));
+                        spiral(pitch(-10).roll(13).move(0.6).scale(0.98));
+                    });
+
+                    g.start = rule(function() {
+                        for (var i=0; i<720; i+=15) {
+                            spiral(scale(0.9).yaw(i/3).pitch(i));
+                        }
+                    });
+                }
+            };
+
+
+
+
+
+
+
+
+
 
             window.onload = function() {
-                setUpGUI();
-                setExample(settings.Script);
-            };  
-
-            function setExample(theId) {
-                var gScript = document.getElementById(theId).innerText;
-                if (gScript === undefined) {
-                    gScript = document.getElementById(theId).textContent;
-                }
-
-                runner.run(gScript);
+                var runner = new grow3.Runner(document.body);
+                runner.run(testFun);
             };
-
-
-            function setUpGUI() {
-                var gui = new dat.GUI();
-                var exCtrl = gui.add(settings, "Script", examples);
-
-                exCtrl.onFinishChange(function(value) {
-                   setExample(value); 
-                });
-                
-            };
-
-            function collectExamples() {
-                var exList = [];
-                
-                var exParent = document.getElementById("sampleSources");
-                var len = exParent.children.length;
-                for (var i = 0; i<len; i++) {
-                    var id = exParent.children[i].getAttribute("id");
-                    exList.push(id);
-                }
-                return exList;
-            };
-    
         </script>
     </body>
 </html>
