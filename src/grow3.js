@@ -1,5 +1,6 @@
-// (C) Philipp Graf 2013
-
+/**
+ * @author Philipp Graf
+ */
 var grow3 = grow3 || {};
 
 grow3.State = (function() {
@@ -55,9 +56,6 @@ grow3.System = (function() {
         this.cameraObj = camera;
 
         this.backgroundColor = 0xcccccc;
-
-
-
     };
 
     system.prototype.constructor = system;

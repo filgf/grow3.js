@@ -1,5 +1,6 @@
-// (C) Philipp Graf
-
+/**
+ * @author Philipp Graf
+ */
 var grow3 = grow3 || {};
 
 grow3.Runner = (function() {
