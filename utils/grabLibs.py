@@ -28,4 +28,4 @@ grabFile(threeXBaseUrl, 'THREEx.FullScreen.js', libsDir)
 grabFile(threeXBaseUrl, 'THREEx.WindowResize.js', libsDir)
 
 datGuiBaseUrl = 'https://dat-gui.googlecode.com/git/build/'
-grabFile(datGuiBaseUrl, 'dat.gui.min.js', libsDir)
+grabFile(datGuiBaseUrl, 'dat.gui.js', libsDir)

@@ -18,6 +18,7 @@ grow3.Runner = (function() {
         if (Detector.webgl) {
             this.renderer = new THREE.WebGLRenderer({antialias: true});
         } else {
+            parentElement.appendChild(Detector.getWebGLErrorMessage());
             this.renderer = new THREE.CanvasRenderer();
         }
         this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -25,7 +26,7 @@ grow3.Runner = (function() {
         this.container = document.createElement('div');
         parentElement.appendChild(this.container);
         this.container.appendChild(this.renderer.domElement);
-        
+
         // CAMERA
         this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 
@@ -35,8 +36,6 @@ grow3.Runner = (function() {
 
         // CONTROLS
         this.controls = new THREE.TrackballControls(this.camera, this.container);
-
-   //     this.g = null;
 
         animate();
     };
