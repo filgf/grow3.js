@@ -33,6 +33,7 @@ grow3.State = (function() {
 grow3.System = (function() {
 
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
+    var sphereGeometry = new THREE.SphereGeometry(0.5, 32, 16);
 
     var system = function(scene, script /* optional */, camera /* optional */) {
         this.scene = scene;
@@ -115,7 +116,7 @@ grow3.System = (function() {
     /*
      * Start evaluation
      */
-    system.prototype.trigger = function(start) {
+    system.prototype.build = function(start) {
 
         if (this.script !== undefined) {
             this.script.call(this, this);
@@ -145,6 +146,33 @@ grow3.System = (function() {
         } while (this.backlogBuild.length > 0);
 
     };
+
+    function computeHierarchyCenter(root)
+    {
+        THREE.SceneUtils.traverseHierarchy( root, function (object)
+        {
+            if (object instanceof THREE.Mesh)
+            {
+                // Object radius
+                var radius = object.geometry.boundingSphere.radius;
+
+                // Object center in world space
+                var objectCenterLocal = object.position.clone();
+                var objectCenterWorld = object.matrixWorld.multiplyVector3(objectCenterLocal);
+
+                // New center in world space
+                var newCenter = new THREE.Vector3();
+                newCenter.add(sceneBSCenter, objectCenterWorld);
+                newCenter.divideScalar(2.0);
+
+                // New radius in world space
+                var dCenter = newCenter.distanceTo(sceneBSCenter);
+                var newRadius = Math.max(dCenter + radius, dCenter + sceneBSRadius);
+                sceneBSCenter = newCenter;
+                sceneBSRadius = newRadius;
+            }
+        } );
+    }
 
 
 
@@ -207,6 +235,10 @@ grow3.System = (function() {
 
     system.prototype.cube = rule(function() {
         this.addMesh(cubeGeometry);
+    });
+
+    system.prototype.sphere = rule(function() {
+        this.addMesh(sphereGeometry);
     });
 
 

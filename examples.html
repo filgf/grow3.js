@@ -168,20 +168,20 @@
 
             var randomValue = function (grow3) {
                 with(grow3) {
-                    background(0xffffff);
-                    var mats = [new THREE.MeshPhongMaterial({color: 0xeebbaa}), new THREE.MeshPhongMaterial({color: 0xbbeeaa}) ];
+                    background(0xcccccc);
+                    var mats = [new THREE.MeshPhongMaterial({color: 0x444444}), new THREE.MeshPhongMaterial({color: 0x888888}) ];
 
                     maxDepth(50);
 
                     rules({
                         seg: function () {
-                            cube(scale(0.5));
-                            seg(move(0.9).roll(rnd(-5, 5)).pitch(rnd(30.0)));
+                            sphere(scale(1.5).material(mats));
+                            seg(move(0.9).scale(0.97).roll(rnd(-5, 5)).pitch(rnd(30.0)));
                         },
 
                         start: function () {
                             for (var i = 0; i < 60; i++) {
-                                seg(yaw(rnd(360)).material(rnd(mats)).move(0.9).roll(rnd(-5, 5)).pitch(rnd(-30.0, 30.0)));
+                                seg(yaw(rnd(360)).move(0.9).roll(rnd(-5, 5)).pitch(rnd(-30.0, 30.0)));
                             }
                         }
                     });

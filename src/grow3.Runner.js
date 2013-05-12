@@ -62,7 +62,7 @@ grow3.Runner = (function() {
 
         // GROW3
         this.g = new grow3.System(this.scene, script, this.camera);
-        this.g.trigger();
+        this.g.build();
 
         this.isRendering = true;
 

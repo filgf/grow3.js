@@ -9,7 +9,6 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Python 2.7.3 (C:/Program Files/Python27/python.exe) interpreter library" level="application" />
   </component>
 </module>
 
