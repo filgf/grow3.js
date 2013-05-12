@@ -5,7 +5,7 @@ Plan r01
   - Kugel
   - Zylinder
   - Pyramide
-  - allg. Mesh
+  - X allg. Mesh
   - Sprites
   - X Text (X Caching)
 
