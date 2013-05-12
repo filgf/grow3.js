@@ -10,7 +10,6 @@ grow3.State = (function() {
         this.objectProto = new THREE.Object3D();
         this.objectProto.matrixAutoUpdate = false;
         
-        this.txt = "";
         this.textParamId = undefined;
         if (parent === undefined) {
             this.mat = standardMaterial;
@@ -70,21 +69,31 @@ grow3.System = (function() {
 
     system.prototype.rule = function(func) {
 
-        var fnew = function(isRoot) {
+        var fnew = function(isRoot /*, additional args */) {
+
+            var otherArgs = Array.prototype.slice.call(arguments, 1);
 
             if (isRoot === true) {
                 this.parent = this.state;                                  // aktueller state -> parent f. folgende 
                 this.rollback = new grow3.State(this.state);               // Vorlage für Rollbacks
                 this.state = this.rollback.clone();                        // Nächster State (f. Unterfunkt)!
 
+                // check if parameters are arrays and select an element
+                otherArgs.forEach(function(el, index, array) {
+                    if (Array.isArray(el)) {
+                        array[index] = this.handleParameter(el);
+                    }
+                }, this);
+
+
                 if (typeof(func) === "function") {
-                    func.call(this);
+                    func.apply(this, otherArgs);
                 } else {        // TODO: Check if array
                     var index = Math.floor(Math.random() * func.length);
-                    func[index].call(this);
+                    func[index].call(this, otherArgs);
                 }
             } else if (this.depth < this.mDepth) {
-                this.backlogBuild.push([fnew, this.state]);                 // inkl. Trafo ausgewertet
+                this.backlogBuild.push([fnew, this.state, otherArgs]);                 // inkl. Trafo ausgewertet
                 this.parent.objectProto.add(this.state.objectProto);
 
                 this.state = this.rollback.clone();                         // Wieder Vorlage (rollback)
@@ -114,11 +123,11 @@ grow3.System = (function() {
 
         start = start || "start";
         this.scene.add(this.state.objectProto);
+        var rootNode = this.state.objectProto;
 
         this.depth = 0;
 
-        this.backlogBuild.push([this[start], this.state]);
-  //      this[start].call(this, this, false);
+        this.backlogBuild.push([this[start], this.state, []]);
 
         do {
             this.depth++;
@@ -129,11 +138,16 @@ grow3.System = (function() {
 //                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
                 var entry = this.backlog.shift();
                 this.state = entry[1];
-                entry[0].call(this, true);
+                entry[2].unshift(true);
+                entry[0].apply(this, entry[2]);
             }
 
         } while (this.backlogBuild.length > 0);
+
     };
+
+
+
 
     system.prototype.rnd = function(p1, p2) {
         var r = Math.random();
@@ -158,16 +172,41 @@ grow3.System = (function() {
         return arr[i];
     };
 
+    system.prototype.handleParameter = function(param) {
+        if (Array.isArray(param)) {
+            if (param.startDepth === undefined) {
+                param.startDepth = this.depth;
+            }
+            return param[(this.depth - param.startDepth) % param.length];
+        } else {
+            return param;
+        }
+
+
+    };
+
+
     system.prototype.background = function(col) {
         this.backgroundColor = col;
     };
 
+    system.prototype.addMesh = function(geo) {
+        var mesh = new THREE.Mesh(geo, this.state.mat);
+        this.parent.objectProto.clone(mesh);
+        this.parent.objectProto.parent.add(mesh);
+    };
+
+
+    /**
+     * BUILTIN RULES
+     */
+
     var rule = system.prototype.rule;
 
+    system.prototype.mesh = rule(system.prototype.addMesh);
+
     system.prototype.cube = rule(function() {
-        var cube = new THREE.Mesh(cubeGeometry, this.state.mat);
-        this.parent.objectProto.clone(cube);
-        this.parent.objectProto.parent.add(cube);
+        this.addMesh(cubeGeometry);
     });
 
 
@@ -183,23 +222,21 @@ grow3.System = (function() {
 
     var glyphsCache = {};
 
-    system.prototype.glyphs = rule(function() {
+    system.prototype.glyphs = rule(function(text) {
         var p = this.parent.textParam;
         if (this.parent.textParamId === undefined) {                                         // Font change -> check if cache exists & build
             this.parent.textParamId = p.font + ":" + p.size + ":" + p.height + ":" + p.curveSegments;
             glyphsCache[this.parent.textParamId] = glyphsCache[this.parent.textParamId] || {};
         }
 
-        if (this.parent.txt !== " ") {
-            if (!glyphsCache[this.parent.textParamId].hasOwnProperty(this.parent.txt)) {     // Build (cached) text geometry
-                var geo = new THREE.TextGeometry(this.parent.txt, this.parent.textParam);
+        if (text !== " ") {
+            if (!glyphsCache[this.parent.textParamId].hasOwnProperty(text)) {     // Build (cached) text geometry
+                var geo = new THREE.TextGeometry(text, this.parent.textParam);
                 centerX(geo);
-                glyphsCache[this.parent.textParamId][this.parent.txt] = geo;
+                glyphsCache[this.parent.textParamId][text] = geo;
             }
 
-            var glyph = new THREE.Mesh(glyphsCache[this.parent.textParamId][this.parent.txt], this.parent.mat);
-            this.parent.objectProto.clone(glyph);
-            this.parent.objectProto.parent.add(glyph);
+            this.addMesh(glyphsCache[this.parent.textParamId][text]);
         }
     });
 
@@ -216,33 +253,27 @@ grow3.System = (function() {
         }
     });
 
-//    this.rule("glyphs", glyphsFun);
 
-  //  this.rule("camera", cameraFun);
 
-    /*
-     *********** Modifiers
+    /**
+     * MODIFIERS
      */
-    var buildTransform = function(fun) {
+
+    system.prototype.buildModifier = function(fun) {
         return function(param) {
-            if (Array.isArray(param)) {
-                if (param.startDepth === undefined) {
-                    param.startDepth = this.depth;
-                }
-                fun.call(this, param[(this.depth - param.startDepth) % param.length]);
-            } else {
-                fun.call(this, param);
-            }
+            fun.call(this, this.handleParameter(param));
             return this;
         };
     };
 
+
+    var buildModifier = system.prototype.buildModifier;
     /*
      * Move forward (scale sensitive)
      */
     var trafo4 = new THREE.Matrix4();
 
-    system.prototype.move = buildTransform(function(amount) {
+    system.prototype.move = buildModifier(function(amount) {
         trafo4.makeTranslation(amount, 0, 0);
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
 //        this.state.objectProto.position.x += amount;
@@ -250,7 +281,7 @@ grow3.System = (function() {
 
     system.prototype.m = system.prototype.move;
 
-    system.prototype.transHoriz = buildTransform(function(amount) {
+    system.prototype.transHoriz = buildModifier(function(amount) {
         trafo4.makeTranslation(0, amount, 0);
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
 //        this.state.objectProto.position.y += amount;
@@ -258,7 +289,7 @@ grow3.System = (function() {
 
     system.prototype.tH = system.prototype.transHoriz;
 
-    system.prototype.transVert = buildTransform(function(amount) {
+    system.prototype.transVert = buildModifier(function(amount) {
         trafo4.makeTranslation(0, 0, amount);
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
 //        this.state.objectProto.position.z += amount;
@@ -269,7 +300,7 @@ grow3.System = (function() {
     /*
      * Change scale by factor amount
      */
-    system.prototype.scale = buildTransform(function(amount) {
+    system.prototype.scale = buildModifier(function(amount) {
         trafo4.makeScale(amount, amount, amount);
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
 //        this.state.objectProto.scale.multiplyScalar(amount);
@@ -278,7 +309,7 @@ grow3.System = (function() {
     system.prototype.s = system.prototype.scale;
 
     // pitch roll yaw
-    system.prototype.roll = buildTransform(function(angle) {
+    system.prototype.roll = buildModifier(function(angle) {
         angle = angle * Math.PI / 180.0;
         trafo4.makeRotationX(angle);
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
@@ -287,7 +318,7 @@ grow3.System = (function() {
 
     system.prototype.rX = system.prototype.roll;
 
-    system.prototype.yaw = buildTransform(function(angle) {
+    system.prototype.yaw = buildModifier(function(angle) {
         angle = angle * Math.PI / 180.0;
         trafo4.makeRotationY(angle);
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
@@ -296,7 +327,7 @@ grow3.System = (function() {
 
     system.prototype.rY = system.prototype.yaw;
 
-    system.prototype.pitch = buildTransform(function(angle) {
+    system.prototype.pitch = buildModifier(function(angle) {
         angle = angle * Math.PI / 180.0;
         trafo4.makeRotationZ(angle);
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
@@ -305,15 +336,11 @@ grow3.System = (function() {
 
     system.prototype.rZ = system.prototype.pitch;
 
-    system.prototype.material = buildTransform(function(mat) {
+    system.prototype.material = buildModifier(function(mat) {
         this.state.mat = mat;
     });
 
-    system.prototype.text = buildTransform(function(s) {
-        this.state.txt = s;
-    });
-
-    system.prototype.textParam = buildTransform(function(o) {
+    system.prototype.textParam = buildModifier(function(o) {
         if (this.state.textParam !== o) {
             this.state.textParamId = undefined;
         }
