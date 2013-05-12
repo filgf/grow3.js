@@ -260,7 +260,7 @@
                 with(grow3) {
 
                     var mats = [new THREE.MeshPhongMaterial({color: 0xffeeee}), new THREE.MeshPhongMaterial({color: 0x889988}) ];
-                    var torus = new THREE.TorusGeometry( 1, 0.3, 32, 12 );
+                    var torus = new THREE.TorusGeometry( 1, 0.35, 12, 32 );
 
                     background(0x444444);
                     maxDepth(4);
@@ -269,7 +269,8 @@
                         start: function () {
                             mesh(material(rnd(mats)), torus);
                             for (var i=0; i<360; i += 30) {
-                                start(yaw(i).scale(0.9).move(8.0).pitch(0.3*i));
+                                start(yaw(i).scale(0.8).move(8.0).pitch(0.3*i));
+                                start(yaw(i).scale(0.8).move(-8.0).pitch(0.3*i));
                             }
                         }
                     });
