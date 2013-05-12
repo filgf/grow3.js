@@ -17,7 +17,6 @@ Plan r01
 - Evt Selektion in Arrays (select, rnd, default) neu organisieren
 - isLeaf()-Funktion / depth()-Funktion
 
-- Webseite: Browser-Kompatibilität prüfen + Detector!
 
 Done r01
 ========
@@ -30,6 +29,7 @@ X - Neuer Name: AndAgain.js, again.js, repeat.js, repetitiveJS, -> growThree.js 
 X - Kamera: spezielle Transformation?
 X - Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe -> array als param, X Index -> select-Fkt)
 X - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (TRafos direkt auf MAtrix!)
+X - Webseite: Browser-Kompatibilität prüfen + Detector!
 
 
 Maybe

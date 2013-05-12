@@ -10,7 +10,6 @@ grow3.State = (function() {
         this.objectProto = new THREE.Object3D();
         this.objectProto.matrixAutoUpdate = false;
         
-        this.txt = "";
         this.textParamId = undefined;
         if (parent === undefined) {
             this.mat = standardMaterial;
@@ -70,21 +69,31 @@ grow3.System = (function() {
 
     system.prototype.rule = function(func) {
 
-        var fnew = function(isRoot) {
+        var fnew = function(isRoot /*, additional args */) {
+
+            var otherArgs = Array.prototype.slice.call(arguments, 1);
 
             if (isRoot === true) {
                 this.parent = this.state;                                  // aktueller state -> parent f. folgende 
                 this.rollback = new grow3.State(this.state);               // Vorlage für Rollbacks
                 this.state = this.rollback.clone();                        // Nächster State (f. Unterfunkt)!
 
+                // check if parameters are arrays and select an element
+                otherArgs.forEach(function(el, index, array) {
+                    if (Array.isArray(el)) {
+                        array[index] = this.handleParameter(el);
+                    }
+                }, this);
+
+
                 if (typeof(func) === "function") {
-                    func.call(this);
+                    func.apply(this, otherArgs);
                 } else {        // TODO: Check if array
                     var index = Math.floor(Math.random() * func.length);
-                    func[index].call(this);
+                    func[index].call(this, otherArgs);
                 }
             } else if (this.depth < this.mDepth) {
-                this.backlogBuild.push([fnew, this.state]);                 // inkl. Trafo ausgewertet
+                this.backlogBuild.push([fnew, this.state, otherArgs]);                 // inkl. Trafo ausgewertet
                 this.parent.objectProto.add(this.state.objectProto);
 
                 this.state = this.rollback.clone();                         // Wieder Vorlage (rollback)
@@ -117,7 +126,7 @@ grow3.System = (function() {
 
         this.depth = 0;
 
-        this.backlogBuild.push([this[start], this.state]);
+        this.backlogBuild.push([this[start], this.state, []]);
   //      this[start].call(this, this, false);
 
         do {
@@ -129,7 +138,8 @@ grow3.System = (function() {
 //                console.log("[RULE] " + this.backlog[0] + ":" + this.depth + ":" + this.backlog.length);
                 var entry = this.backlog.shift();
                 this.state = entry[1];
-                entry[0].call(this, true);
+                entry[2].unshift(true);
+                entry[0].apply(this, entry[2]);
             }
 
         } while (this.backlogBuild.length > 0);
@@ -183,21 +193,21 @@ grow3.System = (function() {
 
     var glyphsCache = {};
 
-    system.prototype.glyphs = rule(function() {
+    system.prototype.glyphs = rule(function(text) {
         var p = this.parent.textParam;
         if (this.parent.textParamId === undefined) {                                         // Font change -> check if cache exists & build
             this.parent.textParamId = p.font + ":" + p.size + ":" + p.height + ":" + p.curveSegments;
             glyphsCache[this.parent.textParamId] = glyphsCache[this.parent.textParamId] || {};
         }
 
-        if (this.parent.txt !== " ") {
-            if (!glyphsCache[this.parent.textParamId].hasOwnProperty(this.parent.txt)) {     // Build (cached) text geometry
-                var geo = new THREE.TextGeometry(this.parent.txt, this.parent.textParam);
+        if (text !== " ") {
+            if (!glyphsCache[this.parent.textParamId].hasOwnProperty(text)) {     // Build (cached) text geometry
+                var geo = new THREE.TextGeometry(text, this.parent.textParam);
                 centerX(geo);
-                glyphsCache[this.parent.textParamId][this.parent.txt] = geo;
+                glyphsCache[this.parent.textParamId][text] = geo;
             }
 
-            var glyph = new THREE.Mesh(glyphsCache[this.parent.textParamId][this.parent.txt], this.parent.mat);
+            var glyph = new THREE.Mesh(glyphsCache[this.parent.textParamId][text], this.parent.mat);
             this.parent.objectProto.clone(glyph);
             this.parent.objectProto.parent.add(glyph);
         }
@@ -220,23 +230,32 @@ grow3.System = (function() {
 
   //  this.rule("camera", cameraFun);
 
+    system.prototype.handleParameter = function(param) {
+        if (Array.isArray(param)) {
+            if (param.startDepth === undefined) {
+                param.startDepth = this.depth;
+            }
+            return param[(this.depth - param.startDepth) % param.length];
+        } else {
+            return param;
+        }
+
+
+    };
+
+
     /*
      *********** Modifiers
      */
-    var buildTransform = function(fun) {
+    system.prototype.buildTransform = function(fun) {
         return function(param) {
-            if (Array.isArray(param)) {
-                if (param.startDepth === undefined) {
-                    param.startDepth = this.depth;
-                }
-                fun.call(this, param[(this.depth - param.startDepth) % param.length]);
-            } else {
-                fun.call(this, param);
-            }
+            fun.call(this, this.handleParameter(param));
             return this;
         };
     };
 
+
+    var buildTransform = system.prototype.buildTransform;
     /*
      * Move forward (scale sensitive)
      */
@@ -307,10 +326,6 @@ grow3.System = (function() {
 
     system.prototype.material = buildTransform(function(mat) {
         this.state.mat = mat;
-    });
-
-    system.prototype.text = buildTransform(function(s) {
-        this.state.txt = s;
     });
 
     system.prototype.textParam = buildTransform(function(o) {
