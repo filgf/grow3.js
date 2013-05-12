@@ -2,14 +2,15 @@ Plan r01
 ========
 
 - Mehr Objekttypen: 
-  - Kugel
-  - Zylinder
+  - X Kugel
+  - Zylinder?
   - Pyramide
   - X allg. Mesh
   - Sprites
   - X Text (X Caching)
 
 - Bug?: camera() defekt!
+- Revisit: Call parameters for Rules
 
 - Hintergrund: Farbe, (Shader)
 - Lichtposition: spezielle Transformation?
