@@ -9,6 +9,7 @@ Plan r01
   - Sprites
   - X Text (X Caching)
 
+- Bug?: camera() defekt!
 - Revisit: Call parameters for Rules
 
 - Evt Selektion in Arrays (select, rnd, default) neu organisieren
@@ -27,6 +28,9 @@ X - Kamera: spezielle Transformation?
 X - Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe -> array als param, X Index -> select-Fkt)
 X - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (TRafos direkt auf MAtrix!)
 X - Webseite: Browser-Kompatibilität prüfen + Detector!
+X - Kugel
+X - allg. Mesh
+X - Text (X Caching)
 X - Bug?: camera() defekt!
 X - Lichtposition: spezielle Transformation?
 X - Revisit: build() - toplevel rules?
@@ -42,3 +46,5 @@ Maybe
 - Bessere Fehlerbehandlung, wie??
 - Linien Segmente aus umhüllendem Polygon (Linie/Spline)
 - Hintergrund: Farbe, (Shader)
+
+- Builtin Objekte: Zylinder, Pyramide
