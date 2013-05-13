@@ -29,7 +29,8 @@
             var runner = new grow3.Runner(document.body);
 
             window.onload = function() {
-                settings.Script = examplesList[examplesList.length - 1];
+//                settings.Script = examplesList[examplesList.length - 1];
+                settings.Script = "Spirally";
                 setUpGUI();
                 setExample(settings.Script);
             };  
@@ -118,6 +119,7 @@
                         },
 
                         start: function () {
+                            camera(move(50).pitch(70).roll(10));
                             twistyObject(material(mat2));
                             spiral(material(mat1));
                         }
