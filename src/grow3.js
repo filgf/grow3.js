@@ -55,6 +55,8 @@ grow3.System = (function() {
 
         this.cameraObj = camera;
 
+        this.hasLighting = false;
+
         this.backgroundColor = 0xcccccc;
     };
 
@@ -118,15 +120,16 @@ grow3.System = (function() {
      */
     system.prototype.build = function(start) {
 
+        this.scene.add(this.state.objectProto);
+        var rootNode = this.state.objectProto;
+
+        this.depth = 0;
+
         if (this.script !== undefined) {
             this.script.call(this, this);
         }
 
         start = start || "start";
-        this.scene.add(this.state.objectProto);
-        var rootNode = this.state.objectProto;
-
-        this.depth = 0;
 
         this.backlogBuild.push([this[start], this.state, []]);
 
@@ -146,34 +149,6 @@ grow3.System = (function() {
         } while (this.backlogBuild.length > 0);
 
     };
-
-    function computeHierarchyCenter(root)
-    {
-        THREE.SceneUtils.traverseHierarchy( root, function (object)
-        {
-            if (object instanceof THREE.Mesh)
-            {
-                // Object radius
-                var radius = object.geometry.boundingSphere.radius;
-
-                // Object center in world space
-                var objectCenterLocal = object.position.clone();
-                var objectCenterWorld = object.matrixWorld.multiplyVector3(objectCenterLocal);
-
-                // New center in world space
-                var newCenter = new THREE.Vector3();
-                newCenter.add(sceneBSCenter, objectCenterWorld);
-                newCenter.divideScalar(2.0);
-
-                // New radius in world space
-                var dCenter = newCenter.distanceTo(sceneBSCenter);
-                var newRadius = Math.max(dCenter + radius, dCenter + sceneBSRadius);
-                sceneBSCenter = newCenter;
-                sceneBSRadius = newRadius;
-            }
-        } );
-    }
-
 
 
 
@@ -284,6 +259,13 @@ grow3.System = (function() {
         }
     });
 
+    system.prototype.light = rule(function(hex, intensity, distance) {
+        var light = new THREE.PointLight(hex, intensity, distance);
+        this.parent.objectProto.clone(light);
+        this.parent.objectProto.parent.add(light);
+
+        this.hasLighting = true;
+    });
 
 
     /**

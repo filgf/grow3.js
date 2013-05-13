@@ -263,17 +263,22 @@
                     var torus = new THREE.TorusGeometry( 1, 0.35, 12, 32 );
 
                     background(0x444444);
-                    maxDepth(4);
+                    maxDepth(5);
 
                     rules({
-                        start: function () {
+                        recurse: function () {
                             camera(move(50).yaw(90));
 
                             mesh(material(rnd(mats)), torus);
                             for (var i=0; i<360; i += 30) {
-                                start(yaw(i).scale(0.8).move(8.0).pitch(0.3*i));
-                                start(yaw(i).scale(0.8).move(-8.0).pitch(0.3*i));
+                                recurse(yaw(i).scale(0.8).move(8.0).pitch(0.3*i));
+                                recurse(yaw(i).scale(0.8).move(-8.0).pitch(0.3*i));
                             }
+                        },
+
+                        start : function() {
+                            light(move(270),0xddffdd);
+                            recurse();
                         }
                     });
                 }

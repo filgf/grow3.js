@@ -10,8 +10,8 @@ Plan r01
   - X Text (X Caching)
 
 - Revisit: Call parameters for Rules
+- Revisit: build() - toplevel rules?
 
-- Hintergrund: Farbe, (Shader)
 - Lichtposition: spezielle Transformation?
 
 - Evt Selektion in Arrays (select, rnd, default) neu organisieren
@@ -42,3 +42,4 @@ Maybe
 - Unterstützung für Materialien / Shader?
 - Bessere Fehlerbehandlung, wie??
 - Linien Segmente aus umhüllendem Polygon (Linie/Spline)
+- Hintergrund: Farbe, (Shader)
