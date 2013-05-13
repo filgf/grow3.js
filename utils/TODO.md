@@ -2,14 +2,8 @@ Plan r01
 ========
 
 - Mehr Objekttypen: 
-  - X Kugel
-  - Zylinder?
-  - Pyramide
-  - X allg. Mesh
   - Sprites
-  - X Text (X Caching)
 
-- Bug?: camera() defekt!
 - Revisit: Call parameters for Rules
 
 - Evt Selektion in Arrays (select, rnd, default) neu organisieren
