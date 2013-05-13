@@ -2,21 +2,16 @@ Plan r01
 ========
 
 - Mehr Objekttypen: 
-  - X Kugel
-  - Zylinder?
-  - Pyramide
-  - X allg. Mesh
   - Sprites
-  - X Text (X Caching)
 
 - Bug?: camera() defekt!
 - Revisit: Call parameters for Rules
+ Evt Selektion in Arrays (select, rnd, default) neu organisieren
 
+- isLeaf()-Funktion / depth()-Funktion
 - Hintergrund: Farbe, (Shader)
 - Lichtposition: spezielle Transformation?
 
-- Evt Selektion in Arrays (select, rnd, default) neu organisieren
-- isLeaf()-Funktion / depth()-Funktion
 
 
 Done r01
@@ -31,6 +26,9 @@ X - Kamera: spezielle Transformation?
 X - Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe -> array als param, X Index -> select-Fkt)
 X - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (TRafos direkt auf MAtrix!)
 X - Webseite: Browser-Kompatibilität prüfen + Detector!
+X - Kugel
+X - allg. Mesh
+X - Text (X Caching)
 
 
 Maybe
@@ -42,3 +40,5 @@ Maybe
 - Unterstützung für Materialien / Shader?
 - Bessere Fehlerbehandlung, wie??
 - Linien Segmente aus umhüllendem Polygon (Linie/Spline)
+
+- Builtin Objekte: Zylinder, Pyramide
