@@ -10,9 +10,6 @@ Plan r01
   - X Text (X Caching)
 
 - Revisit: Call parameters for Rules
-- Revisit: build() - toplevel rules?
-
-- Lichtposition: spezielle Transformation?
 
 - Evt Selektion in Arrays (select, rnd, default) neu organisieren
 - isLeaf()-Funktion / depth()-Funktion
@@ -31,6 +28,8 @@ X - Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe -> array als
 X - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (TRafos direkt auf MAtrix!)
 X - Webseite: Browser-Kompatibilität prüfen + Detector!
 X - Bug?: camera() defekt!
+X - Lichtposition: spezielle Transformation?
+X - Revisit: build() - toplevel rules?
 
 
 Maybe

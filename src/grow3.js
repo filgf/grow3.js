@@ -129,9 +129,10 @@ grow3.System = (function() {
             this.script.call(this, this);
         }
 
-        start = start || "start";
-
-        this.backlogBuild.push([this[start], this.state, []]);
+        if ((start !== undefined)||(this.backlogBuild.length === 0)) {
+            start = start || "start";
+            this.backlogBuild.push([this[start], this.state, []]);
+        }
 
         do {
             this.depth++;
@@ -149,7 +150,6 @@ grow3.System = (function() {
         } while (this.backlogBuild.length > 0);
 
     };
-
 
 
     system.prototype.rnd = function(p1, p2) {

@@ -277,10 +277,12 @@
                         },
 
                         start : function() {
-                            light(move(270),0xddffdd);
+                            light(move(270), 0xddffdd);
                             recurse();
                         }
                     });
+
+                    start();
                 }
             };
 
