@@ -9,7 +9,6 @@ Plan r01
   - Sprites
   - X Text (X Caching)
 
-- Bug?: camera() defekt!
 - Revisit: Call parameters for Rules
 
 - Hintergrund: Farbe, (Shader)
@@ -31,6 +30,7 @@ X - Kamera: spezielle Transformation?
 X - Abfolgen von: Werten, Buchstaben, Farbwerten,... (nach  X Tiefe -> array als param, X Index -> select-Fkt)
 X - Problem: Abfolge Trafo Move->Rotate, besser vertauschen? (TRafos direkt auf MAtrix!)
 X - Webseite: Browser-Kompatibilität prüfen + Detector!
+X - Bug?: camera() defekt!
 
 
 Maybe

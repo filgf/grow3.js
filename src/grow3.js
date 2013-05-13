@@ -272,16 +272,15 @@ grow3.System = (function() {
         }
     });
 
+    var qDummy = new THREE.Quaternion();
+    var sDummy = new THREE.Vector3();
+
     system.prototype.camera = rule(function() {
         if (this.cameraObj !== undefined) {
-            if (this.cameraObj.parent !== undefined) {
-                this.cameraObj.parent.remove(this.cameraObj);
-            }
-            this.parent.objectProto.clone(this.cameraObj);  // update cam with trafo
+            this.scene.updateMatrixWorld(true);
+
+            this.parent.objectProto.matrixWorld.decompose(this.cameraObj.position, qDummy, sDummy);
             this.cameraObj.lookAt(0);
-            this.cameraObj.matrixAutoUpdate = true;
-//            this.parent.objectProto.parent.add(this.cameraObj);
-            this.scene.add(this.cameraObj);
         }
     });
 

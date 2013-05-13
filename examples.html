@@ -267,6 +267,8 @@
 
                     rules({
                         start: function () {
+                            camera(move(50).yaw(90));
+
                             mesh(material(rnd(mats)), torus);
                             for (var i=0; i<360; i += 30) {
                                 start(yaw(i).scale(0.8).move(8.0).pitch(0.3*i));
