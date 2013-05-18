@@ -6,7 +6,7 @@ var grow3 = grow3 || {};
 grow3.Runner = (function() {
     var that;
         
-    var runner = function(parentElement) {
+    var runner = function(parentElement, doScreenshot) {
         that = this;
         
         this.isRendering = false;
@@ -16,7 +16,7 @@ grow3.Runner = (function() {
         
         // RENDERER
         if (Detector.webgl) {
-            this.renderer = new THREE.WebGLRenderer({antialias: true});
+            this.renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
         } else {
             parentElement.appendChild(Detector.getWebGLErrorMessage());
             this.renderer = new THREE.CanvasRenderer();
@@ -37,6 +37,9 @@ grow3.Runner = (function() {
         // CONTROLS
         this.controls = new THREE.TrackballControls(this.camera, this.container);
 
+        this.doScreenshot = doScreenshot;
+        this.frameCount = 0;
+
         animate();
     };
     
@@ -49,7 +52,7 @@ grow3.Runner = (function() {
         this.scene = new THREE.Scene();
 
         this.scene.add(this.camera);
-        this.camera.position.set(-25, -10, 10);
+        this.camera.position.set(-25, -10, 0);
         this.camera.lookAt(0);
 
 
@@ -69,6 +72,7 @@ grow3.Runner = (function() {
         }
 
         this.isRendering = true;
+        this.frameCount = 2;
 
 //        console.debug(JSON.stringify(this.renderer.info));
 
@@ -78,6 +82,14 @@ grow3.Runner = (function() {
         requestAnimationFrame(animate);
         if (that.isRendering) {
             render();
+
+            if (that.frameCount == 1 && that.doScreenshot) {
+                THREEx.Screenshot.take(that.renderer, "image/jpeg", 200, 200)
+            }
+            if (that.frameCount > 0) {
+                that.frameCount--;
+            }
+
             update();
         }
     };
@@ -90,6 +102,7 @@ grow3.Runner = (function() {
     var update = function() {
         that.controls.update();
     };
-    
+
+
     return runner;
 })();
