@@ -16,7 +16,7 @@ grow3.Runner = (function() {
         
         // RENDERER
         if (Detector.webgl) {
-            this.renderer = new THREE.WebGLRenderer({antialias: true});
+            this.renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
         } else {
             parentElement.appendChild(Detector.getWebGLErrorMessage());
             this.renderer = new THREE.CanvasRenderer();
@@ -44,6 +44,7 @@ grow3.Runner = (function() {
 
     runner.prototype.run = function(script) {
         this.isRendering = false;
+        this.frameCount = 0;
 
         // SCENE WITH CAM
         this.scene = new THREE.Scene();
@@ -77,8 +78,11 @@ grow3.Runner = (function() {
      var animate = function() {
         requestAnimationFrame(animate);
         if (that.isRendering) {
+            that.frameCount++;
             render();
             update();
+        } else {
+            that.frameCount = 0;
         }
     };
 

@@ -1,4 +1,4 @@
-name = "Text World";
+name = "Mesh Rings";
 
 author = "FilGf";
 
