@@ -47,6 +47,7 @@ grow3.Runner = (function() {
 
     runner.prototype.run = function(script) {
         this.isRendering = false;
+        this.frameCount = 0;
 
         // SCENE WITH CAM
         this.scene = new THREE.Scene();
@@ -81,6 +82,7 @@ grow3.Runner = (function() {
      var animate = function() {
         requestAnimationFrame(animate);
         if (that.isRendering) {
+            that.frameCount++;
             render();
 
             if (that.frameCount == 1 && that.doScreenshot) {
@@ -91,6 +93,8 @@ grow3.Runner = (function() {
             }
 
             update();
+        } else {
+            that.frameCount = 0;
         }
     };
 

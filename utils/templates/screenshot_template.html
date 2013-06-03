@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <style>body { margin: 0; overflow: hidden; }</style>
+    </head>
+    <body>
+        <script src="../src/lib/three.js"></script>
+        <script src="../src/lib/Detector.js"></script>
+        <script src="../src/lib/TrackballControls.js"></script>
+        <script src="../src/lib/THREEx.FullScreen.js"></script>
+        <script src="../src/lib/THREEx.WindowResize.js"></script>
+        <script src="../src/lib/helvetiker_regular.typeface.js"></script>
+
+        <script src="../src/grow3.js"></script>
+        <script src="../src/grow3.Runner.js"></script>
+
+        <script src="../examples/js/{{file}}"></script>
+
+        <script>
+
+            document.title = (name || "")  + " screenshot [grow3.js]"
+            window.innerWidth = "{{height}}";
+            window.innerHeight = "{{width}}";
+            var runner = new grow3.Runner(document.body);
+
+            var wait = function() {
+                if (runner.frameCount < 4) {
+                    window.setTimeout(wait, 50);
+                } else {
+                    runner.isRendering = 0;
+                    waitStopped();
+                }
+            }
+
+            var waitStopped = function() {
+                if (runner.frameCount == 0) {
+                    var dataUrl = runner.renderer.domElement.toDataURL("image/png");
+                    console.log(dataUrl);
+
+           //         window.close();
+                    // sshot
+                } else {
+                    window.setTimeout(waitStopped, 50);
+                }
+            }
+
+
+
+            window.onload = function() {
+                runner.run(source);
+                wait();
+            };
+         </script>
+    </body>
+</html>
