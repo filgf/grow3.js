@@ -18,10 +18,16 @@ def render(templ, args, out):
 def openChrome(url):
     if sys.platform.startswith('darwin'):
         call(["open", "/Applications/Google Chrome.app", "screenshot.html"])
+
+    elif sys.platform.startswith('linux2'):
+        call(["chromium-browser", "screenshot.html"])
+
     else:
-        # TODO: win32/linux
+        # TODO: win32
         print "Chrome open not implemented!"
         sys.exit(1)
+
+
 
 
 for file in os.listdir("../examples/js"):

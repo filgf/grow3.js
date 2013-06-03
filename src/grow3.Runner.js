@@ -10,7 +10,8 @@ grow3.Runner = (function() {
         that = this;
         
         this.isRendering = false;
-        
+        this.frameCount = 0;
+
         var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
         var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
         
@@ -38,7 +39,6 @@ grow3.Runner = (function() {
         this.controls = new THREE.TrackballControls(this.camera, this.container);
 
         this.doScreenshot = doScreenshot;
-        this.frameCount = 0;
 
         animate();
     };
@@ -73,7 +73,6 @@ grow3.Runner = (function() {
         }
 
         this.isRendering = true;
-        this.frameCount = 2;
 
 //        console.debug(JSON.stringify(this.renderer.info));
 
@@ -83,15 +82,8 @@ grow3.Runner = (function() {
         requestAnimationFrame(animate);
         if (that.isRendering) {
             that.frameCount++;
+
             render();
-
-            if (that.frameCount == 1 && that.doScreenshot) {
-                THREEx.Screenshot.take(that.renderer, "image/jpeg", 200, 200)
-            }
-            if (that.frameCount > 0) {
-                that.frameCount--;
-            }
-
             update();
         } else {
             that.frameCount = 0;
