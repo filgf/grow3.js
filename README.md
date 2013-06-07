@@ -1,13 +1,15 @@
 grow3.js
 ========
 
-A library for building recursive 3D structures.
+![grow3.js example](http://htmlpreview.github.com/?https://github.com/filgf/grow3.js/blob/master/examples/screenshots/Spirally.png)
 
-Based on three.js.
+A cool library for building recursive 3D structures.
 
-(Prefers a WebGL enabled browser, i.e. Chrome or Firefox)
+Check out the [example gallery](http://htmlpreview.github.com/?https://github.com/filgf/grow3.js/blob/master/examples/index.html)!
 
-For a minimal template see [here](tests/template.html)
+Based on three.js (Prefers a WebGL enabled browser, i.e. Chrome or Firefox)
+
+For a minimal template see [here](tests/template.html).
 
 
 

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>grow3.js Gallery</title>
+</head>
+<body>
+<h1>grow3.js Gallery</h1>
+<div>
+    <p>Click on the thumbnails to open examples for <b><a href="https://github.com/filgf/grow3.js">grow3.js</a></b>!</p>
+    <p>Prefers a WebGL-enabled browser (Chrome, Firefox). Feel free to check out the sources, too.</p>
+    <p>Usage:
+        <ul>
+            <li>Left-click and drag mouse to <em>rotate</em> object.</li>
+            <li>Right-click and drag mouse to <em>move</em> object.</li>
+            <li>Scroll-Wheel (or zoom on touchpad) to <em>zoom in/out</em>.</li>
+        </ul>
+    </p>
+</div>
+
+{% for entry in entries %}
+<a href="html/{{entry}}.html"><img src="screenshots/{{entry}}.png"/></a>
+{% endfor %}
+</body>
+</html>
