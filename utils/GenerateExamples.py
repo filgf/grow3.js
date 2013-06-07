@@ -1,8 +1,13 @@
-from jinja2 import Environment, FileSystemLoader
-import os, sys
+import os
+import sys
+import time
+import subprocess
 from subprocess import call
-from bottle import *
 
+from jinja2 import Environment, FileSystemLoader
+
+
+#Jinja2 Helpers
 jinja2_env = Environment(loader=FileSystemLoader('templates/'))
 
 def template(name, ctx):
@@ -15,12 +20,13 @@ def render(templ, args, out):
         ofile.write(rendered)
         ofile.close()
 
+# Helper to locally open page in chrome/ium
 def openChrome(url):
     if sys.platform.startswith('darwin'):
-        call(["open", "/Applications/Google Chrome.app", "screenshot.html"])
+        call(["open", "/Applications/Google Chrome.app", url])
 
     elif sys.platform.startswith('linux2'):
-        call(["chromium-browser", "screenshot.html"])
+        call(["chromium-browser", url])
 
     else:
         # TODO: win32
@@ -28,8 +34,7 @@ def openChrome(url):
         sys.exit(1)
 
 
-
-
+# Generate HTML-Files for examples
 for file in os.listdir("../examples/js"):
     if file.endswith(".js"):
         nameBase = os.path.splitext(file)[0]
@@ -37,18 +42,23 @@ for file in os.listdir("../examples/js"):
         render('example_template.html', { 'example' : nameBase, 'file' : file }, '../examples/html/' + nameBase + '.html')
 
 
+# Generate Screenshots (using generate HTML-Files opened in chrome and a minimal server receiving POST-messages)
 
+#should terminate with end of script
+serverproc = subprocess.Popen([sys.executable, "GenerateExamplesServer.py"])
 
 # SCREENSHOTS
-WIDTH = 200
-HEIGHT = 200
+WIDTH = 300
+HEIGHT = 300
 
 for file in os.listdir("../examples/js"):
     if file.endswith(".js"):
         nameBase = os.path.splitext(file)[0]
         print "Screenshot " + nameBase + ".html..."
-        render('screenshot_template.html', { 'example' : nameBase, 'file' : file, 'width' : WIDTH, 'height' : HEIGHT }, 'screenshot.html')
+        filename = 'screenshot'+ nameBase + '.html'
+        render('screenshot_template.html', { 'example' : nameBase, 'file' : file, 'width' : WIDTH, 'height' : HEIGHT }, filename)
 
-        openChrome("screenshot.html")
-#        call(["open", "/Applications/Google Chrome.app", "screenshot.html"])
-        break   #TODO: remove
+        print "Open in browser " + filename
+        openChrome(filename)
+        time.sleep(2)
+

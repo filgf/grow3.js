@@ -18,6 +18,30 @@
 
         <script>
 
+            // http://stackoverflow.com/a/133997
+            function post_to_url(path, params, method) {
+                method = method || "post"; // Set method to post by default if not specified.
+
+                var form = document.createElement("form");
+                form.setAttribute("method", method);
+                form.setAttribute("action", path);
+
+                for(var key in params) {
+                    if(params.hasOwnProperty(key)) {
+                        var hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", key);
+                        hiddenField.setAttribute("value", params[key]);
+
+                        form.appendChild(hiddenField);
+                     }
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+
+
             document.title = (name || "")  + " screenshot [grow3.js]"
             window.innerWidth = "{{height}}";
             window.innerHeight = "{{width}}";
@@ -37,13 +61,11 @@
                     var dataUrl = runner.renderer.domElement.toDataURL("image/png");
                     console.log(dataUrl);
 
-           //         window.close();
-                    // sshot
+                    post_to_url("http://localhost:8765", {"name" : "{{example}}", "shot" : dataUrl});
                 } else {
                     window.setTimeout(waitStopped, 50);
                 }
             }
-
 
 
             window.onload = function() {
