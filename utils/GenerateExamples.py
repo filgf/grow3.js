@@ -44,10 +44,13 @@ for file in os.listdir("../examples/js"):
         print "Generate " + nameBase + ".html..."
         render('example_template.html', { 'example' : nameBase, 'file' : file }, '../examples/html/' + nameBase + '.html')
 
+# SCREENSHOTS
+WIDTH = 300
+HEIGHT = 300
 
 # Generate Gallery
 print "Generate gallery..."
-render ('gallery_template.html', { 'entries' : exampleList}, '../examples/index.html')
+render ('gallery_template.html', { 'entries' : exampleList, 'width' : WIDTH, 'height' : HEIGHT }, '../examples/index.html')
 
 
 # Generate Screenshots (using generate HTML-Files opened in chrome and a minimal server receiving POST-messages)
@@ -56,9 +59,7 @@ if (RENDER_SCREENSHOTS):
     #server process should terminate with end of script
     serverproc = subprocess.Popen([sys.executable, "GenerateExamplesServer.py"])
 
-    # SCREENSHOTS
-    WIDTH = 300
-    HEIGHT = 300
+
 
     for file in os.listdir("../examples/js"):
         if file.endswith(".js"):
