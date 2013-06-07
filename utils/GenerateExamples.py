@@ -3,6 +3,7 @@ import sys
 import time
 import subprocess
 from subprocess import call
+from xml.dom import minidom
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -37,12 +38,19 @@ def openChrome(url):
 
 exampleList = [];
 # Generate HTML-Files for examples
-for file in os.listdir("../examples/js"):
+examplesDir = "../examples/js/"
+
+for file in os.listdir(examplesDir):
     if file.endswith(".js"):
+        jsContent = open(examplesDir + file).read()
+
+
         nameBase = os.path.splitext(file)[0]
         exampleList.append(nameBase)
         print "Generate " + nameBase + ".html..."
-        render('example_template.html', { 'example' : nameBase, 'file' : file }, '../examples/html/' + nameBase + '.html')
+        render('example_template.html', { 'example' : nameBase, 'file' : file }, '../examples/js/' + nameBase + '.html')
+        render('example_inline_template.html', { 'example' : nameBase, 'jsContent' : jsContent }, '../examples/html/' + nameBase + '.html')
+
 
 # SCREENSHOTS
 WIDTH = 300
@@ -61,7 +69,7 @@ if (RENDER_SCREENSHOTS):
 
 
 
-    for file in os.listdir("../examples/js"):
+    for file in os.listdir(examplesDir):
         if file.endswith(".js"):
             nameBase = os.path.splitext(file)[0]
             print "Screenshot " + nameBase + ".html..."
