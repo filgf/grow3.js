@@ -41,10 +41,9 @@
                 form.submit();
             }
 
-
             document.title = (name || "")  + " screenshot [grow3.js]"
-            window.innerWidth = "{{height}}";
-            window.innerHeight = "{{width}}";
+            window.innerWidth = {{width}} * {{aaFactor}};
+            window.innerHeight = {{height}} * {{aaFactor}};
             var runner = new grow3.Runner(document.body);
 
             var wait = function() {
@@ -58,7 +57,14 @@
 
             var waitStopped = function() {
                 if (runner.frameCount == 0) {
-                    var dataUrl = runner.renderer.domElement.toDataURL("image/png");
+                    var shrinkedCanvas = document.createElement("canvas");
+                    shrinkedCanvas.width = {{width}};
+                    shrinkedCanvas.height = {{height}};
+
+                    var ctx = shrinkedCanvas.getContext("2d");
+                    ctx.drawImage(runner.renderer.domElement, 0, 0, {{width}}*{{aaFactor}}, {{height}}*{{aaFactor}}, 0, 0,  {{width}}, {{height}});
+
+                    var dataUrl = shrinkedCanvas.toDataURL("image/png");
                     console.log(dataUrl);
 
                     post_to_url("http://localhost:8765", {"name" : "{{example}}", "shot" : dataUrl});
