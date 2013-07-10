@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <style>body { margin: 0; overflow: hidden; }</style>
+    </head>
+    <body>
+        <script src="js/lib/three.js"></script>
+        <script src="js/lib/Detector.js"></script>
+        <script src="js/lib/TrackballControls.js"></script>
+        <script src="js/lib/THREEx.FullScreen.js"></script>
+        <script src="js/lib/THREEx.WindowResize.js"></script>
+        <script src="js/lib/helvetiker_regular.typeface.js"></script>
+
+        <script src="js/grow3.min.js"></script>
+
+        <script>
+            document.title = (name || "")  + " [grow3.js]"
+
+            name = "Random Value";
+
+author = "FilGf";
+
+date = "2013-04-20";
+
+source = function (grow3) {
+
+    with (grow3) {
+        background(0xcccccc);
+        var mats = [new THREE.MeshPhongMaterial({color: 0x444444}), new THREE.MeshPhongMaterial({color: 0x888888}) ];
+
+        maxDepth(50);
+
+        rules({
+            seg: function () {
+                sphere(scale(1.5).material(mats));
+                seg(move(0.9).scale(0.97).roll(rnd(-5, 5)).pitch(rnd(30.0)));
+            },
+
+            start: function () {
+                for (var i = 0; i < 60; i++) {
+                    seg(yaw(rnd(360)).move(0.9).roll(rnd(-5, 5)).pitch(rnd(-30.0, 30.0)));
+                }
+            }
+        });
+    }
+
+};
+
+            window.onload = function() {
+                var runner = new grow3.Runner(document.body);
+                runner.run(source);
+            };
+        </script>
+    </body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <style>body { margin: 0; overflow: hidden; }</style>
+    </head>
+    <body>
+        <script src="js/lib/three.js"></script>
+        <script src="js/lib/Detector.js"></script>
+        <script src="js/lib/TrackballControls.js"></script>
+        <script src="js/lib/THREEx.FullScreen.js"></script>
+        <script src="js/lib/THREEx.WindowResize.js"></script>
+        <script src="js/lib/helvetiker_regular.typeface.js"></script>
+
+        <script src="js/grow3.min.js"></script>
+
+        <script>
+            document.title = (name || "")  + " [grow3.js]"
+
+            {{ jsContent }}
+
+            window.onload = function() {
+                var runner = new grow3.Runner(document.body);
+                runner.run(source);
+            };
+        </script>
+    </body>
+</html>

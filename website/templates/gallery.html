@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for entry in gentries %}
+    <div class="carousel span4">
+        <div class="carousel-inner">
+            <div class="item active ">
+                <a href="g_{{entry}}.html"><img src="screenshots/{{entry}}.png" class="img-rounded"/></a>
+                <div class="carousel-caption">
+                      <h4>{{entry}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>{% endfor %}
+{% endblock %}

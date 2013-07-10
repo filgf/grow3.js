@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grow3.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="container">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="home.html">Grow3.js</a>
+            <ul class="nav">{{ navbar }}</ul>
+        </div>
+    </div>
+
+
+    <div class="span10 offset1">
+        {% block content %}{{ content }}{% endblock %}
+    </div>
+</div>
+<script src="js/jquery-1.10.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+{% block foot %}{% endblock %}
+
+</body>
+</html>

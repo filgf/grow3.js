@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block head %}<link href="css/prettify.css" type="text/css" rel="stylesheet"/>
+<link href="css/desert.css" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+<ul class="nav nav-list span2">
+  <li class="active"><a href="#">Home</a></li>
+  <li><a href="#">Library</a></li>
+</ul>
+<div class="span7">{{ content }}</div>
+</div>
+{% endblock %}
+
+{% block foot %}<script type="text/javascript" src="js/prettify.js"></script>
+<script type="text/javascript">
+	     $(document).ready(function() {
+			prettyPrint();
+        });
+</script>
+{% endblock %}
+
