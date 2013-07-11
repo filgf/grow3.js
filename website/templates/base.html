@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Grow3.js</title>
+    <title>{% if title is defined %} {{ title }} &ndash; {% endif %}Grow3.js</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
     {% block head %}{% endblock %}
 </head>
@@ -12,7 +11,7 @@
 <div class="container">
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="home.html">Grow3.js</a>
+            <a class="brand" href="index.html">Grow3.js</a>
             <ul class="nav">{{ navbar }}</ul>
         </div>
     </div>

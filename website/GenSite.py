@@ -52,7 +52,7 @@ copytree('../src/lib', 'out/js/lib', ignore=ignore_patterns('*.txt', 'dat.gui.js
 # copy screenshots
 copytree('../examples/screenshots', 'out/screenshots')
 
-navbarEntries = [{ "name" : "About",            "url" : "home.html"},
+navbarEntries = [{ "name" : "About",            "url" : "index.html"},
                  { "name" : "Gallery",          "url" : "gallery.html"},
                  { "name" : "Learn",            "url" : "learn.html"},
                  { "name" : "Source@Github",    "url" : "https://github.com/filgf/grow3.js"}]
@@ -73,10 +73,11 @@ def generate_navbar(index):
 # build home page
 content = md_to_html('home.md')
 navbar = generate_navbar(0)
-render_template_to_out('home.html', 'home.html', { 'content' : content, 'navbar' : navbar } )
+render_template_to_out('home.html', 'index.html', { 'content' : content, 'navbar' : navbar } )
 
 
 # build gallery page
+navbar = generate_navbar(1)
 
 examplesDir = "../examples/js/"
 gentries = []
@@ -87,14 +88,14 @@ for file in os.listdir(examplesDir):
         gentries.append(nameBase)
 
         jsContent = open(examplesDir + file).read()
-        render_template_to_out('gallery_entry.html', 'g_' + nameBase + '.html', { 'example' : nameBase, 'jsContent' : jsContent })
+        render_template_to_out('gallery_entry.html', 'g_' + nameBase + '.html', { 'example' : nameBase, 'jsContent' : jsContent, 'title' : nameBase })
 
 
 
 print gentries
 
-navbar = generate_navbar(1)
-render_template_to_out('gallery.html', 'gallery.html', { 'gentries' : gentries, 'navbar' : navbar } )
+
+render_template_to_out('gallery.html', 'gallery.html', { 'gentries' : gentries, 'navbar' : navbar, 'title' : 'Gallery'} )
 
 
 
@@ -103,7 +104,7 @@ render_template_to_out('gallery.html', 'gallery.html', { 'gentries' : gentries, 
 # build docs
 content = md_to_html('learn.md')
 navbar = generate_navbar(2)
-outstr = render_template('learn.html', { 'content' : content, 'navbar' : navbar } )
+outstr = render_template('learn.html', { 'content' : content, 'navbar' : navbar, 'title' : 'Learn' } )
 outstr = outstr.replace('<pre>', '<pre class="prettyprint lang-js">')
 write_html('learn.html', outstr)
 
