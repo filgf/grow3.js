@@ -1,9 +1,6 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>[GROW3] Template</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <style>body { margin: 0; overflow: hidden; }</style>
     </head>
     <body>
@@ -12,27 +9,20 @@
         <script src="../src/lib/TrackballControls.js"></script>
         <script src="../src/lib/THREEx.FullScreen.js"></script>
         <script src="../src/lib/THREEx.WindowResize.js"></script>
-        <script src="../src/lib/dat.gui.js"></script>
         <script src="../src/lib/helvetiker_regular.typeface.js"></script>
    
         <script src="../src/grow3.js"></script>
         <script src="../src/grow3.Runner.js"></script>
 
-<!--        <script src="build/grow3.min.js"></script> -->
+        <!-- SELECT EXAMPLE TO RUN BELOW: ---------->
+        <script src="js/Spikey.js"></script>
+        <!------------------------------------------>
 
         <script>
-            var testFun = function(g) {
-                with(g) {
-                    rules({
-                        start : function() {
-                            cube();
-                        }
-                    });            }
-            };
-
+            document.title = (name || "")  + " [grow3.js]"
             window.onload = function() {
                 var runner = new grow3.Runner(document.body);
-                runner.run(testFun);
+                runner.run(source);
             };
         </script>
     </body>
