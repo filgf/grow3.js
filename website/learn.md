@@ -2,7 +2,7 @@
 
 ### Hello grow3.js!
 
-Minimal example code for a simple silvery cube:
+Minimal code example for a simple silvery cube:
 
     <script>
         var g3 = function(g) {
@@ -35,6 +35,7 @@ an implementation which mostly consists of rule calls (and modifiers - see below
 
 Every rule is influenced by grow3's **state** when it is run. The state includes the local coordinate system (rotation and scaling),
 materials to apply and other data that influences the outcome of a rule based on the time it's run.
+
 
 The state for a rule can be manipulated using **modifiers**. Modifiers can be placed inside the rule call arguments for a rule or be
 called prior to calling a rule.

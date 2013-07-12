@@ -1,11 +1,10 @@
 from distutils.dir_util import remove_tree, mkpath, copy_tree
-from shutil import copytree, copy2, rmtree, ignore_patterns
+from shutil import copytree, copy2, ignore_patterns
 import markdown
 from jinja2 import Environment, FileSystemLoader
 import time
 import codecs
 import os
-
 
 jinja2_env = Environment(loader=FileSystemLoader('templates/'), cache_size=0)
 
@@ -23,7 +22,7 @@ def write_html(oname, outstr):
 
 def render_template_to_out(tname, oname, ctx):
     outstr = render_template(tname, ctx)
-#    print outstr
+    #    print outstr
     write_html(oname, outstr)
 
 
@@ -31,14 +30,13 @@ def md_to_html(mdFile):
     input_file = codecs.open(mdFile, mode="r", encoding="utf-8")
     text = input_file.read()
     content = markdown.markdown(text, extensions=['extra'])
-#    print content
+    #    print content
     return content
-
 
 
 start = time.time()
 
-# create out dir
+# (re)create out dir
 remove_tree("out", verbose=1)
 mkpath("out", verbose=1)
 
@@ -52,71 +50,43 @@ copytree('../src/lib', 'out/js/lib', ignore=ignore_patterns('*.txt', 'dat.gui.js
 # copy screenshots
 copytree('../examples/screenshots', 'out/screenshots')
 
-navbarEntries = [{ "name" : "About",            "url" : "index.html"},
-                 { "name" : "Gallery",          "url" : "gallery.html"},
-                 { "name" : "Learn",            "url" : "learn.html"},
-                 { "name" : "Source@Github",    "url" : "https://github.com/filgf/grow3.js"}]
-
-def generate_navbar(index):
-    s = ""
-    i = 0
-    for entry in navbarEntries:
-        s = s + '<li'
-        if i == index:
-            s = s + ' class="active"'
-        s = s + '><a href="' + entry['url'] + '">' + entry['name'] + '</a></li>'
-        i += 1
-    return s
-
-
+navbarEntries = [{"name": "About", "url": "index.html"},
+                 {"name": "Gallery", "url": "gallery.html"},
+                 {"name": "Learn", "url": "learn.html"},
+                 {"name": "Source@Github", "url": "https://github.com/filgf/grow3.js"}]
 
 # build home page
 content = md_to_html('home.md')
-navbar = generate_navbar(0)
-render_template_to_out('home.html', 'index.html', { 'content' : content, 'navbar' : navbar } )
+render_template_to_out('home.html', 'index.html', {'content': content, 'nentries': navbarEntries, 'nactive': 0})
 
 
-# build gallery page
-navbar = generate_navbar(1)
-
+# build gallery pages
 examplesDir = "../examples/js/"
 gentries = []
 
-for file in os.listdir(examplesDir):
-    if file.endswith(".js"):
-        nameBase = os.path.splitext(file)[0]
+for jsfile in os.listdir(examplesDir):
+    if jsfile.endswith(".js"):
+        nameBase = os.path.splitext(jsfile)[0]
         gentries.append(nameBase)
 
-        jsContent = open(examplesDir + file).read()
-        render_template_to_out('gallery_entry.html', 'g_' + nameBase + '.html', { 'example' : nameBase, 'jsContent' : jsContent, 'title' : nameBase })
-
-
+        jsContent = open(examplesDir + jsfile).read()
+        render_template_to_out('gallery_entry.html', 'g_' + nameBase + '.html',
+                               {'example': nameBase, 'jsContent': jsContent, 'title': nameBase})
 
 print gentries
 
-
-render_template_to_out('gallery.html', 'gallery.html', { 'gentries' : gentries, 'navbar' : navbar, 'title' : 'Gallery'} )
-
-
-
+# build gallery overview
+render_template_to_out('gallery.html', 'gallery.html',
+                       {'gentries': gentries, 'nentries': navbarEntries, 'nactive': 1, 'title': 'Gallery'})
 
 
 # build docs
 content = md_to_html('learn.md')
-navbar = generate_navbar(2)
-outstr = render_template('learn.html', { 'content' : content, 'navbar' : navbar, 'title' : 'Learn' } )
+outstr = render_template('learn.html',
+                         {'content': content, 'nentries': navbarEntries, 'nactive': 2, 'title': 'Learn'})
+
 outstr = outstr.replace('<pre>', '<pre class="prettyprint lang-js">')
 write_html('learn.html', outstr)
 
-
-
-# build gallery
-# build gallery-elements
-
-
-
-
-
-
 ende = time.time()
-print "Finished (" + str(ende-start) + "s)!"
+print "Finished (" + str(ende - start) + "s)!"

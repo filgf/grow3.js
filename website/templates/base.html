@@ -12,7 +12,7 @@
     <div class="navbar">
         <div class="navbar-inner">
             <a class="brand" href="index.html">Grow3.js</a>
-            <ul class="nav">{{ navbar }}</ul>
+            <ul class="nav">{% for nentry in nentries %}<li{% if nactive is sameas loop.index0 %} class="active"{% endif %}><a href="{{nentry.url}}">{{nentry.name}}</a></li>{% endfor %}</ul>
         </div>
     </div>
 
