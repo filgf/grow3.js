@@ -1,7 +1,7 @@
 grow3.js
 ========
 
-![grow3.js example](https://grow3.zyxxy.de/screenshots/Spirally.png)
+![grow3.js Example Screenshot](https://grow3.zyxxy.de/screenshots/Spirally.png)
 
 A cool library for building recursive 3D structures.
 

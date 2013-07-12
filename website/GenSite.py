@@ -37,7 +37,11 @@ def md_to_html(mdFile):
 start = time.time()
 
 # (re)create out dir
-remove_tree("out", verbose=1)
+try:
+    remove_tree("out", verbose=1)
+except:
+    print "Warning: Could not delete output directory."
+
 mkpath("out", verbose=1)
 
 # copy static assets
