@@ -70,8 +70,8 @@ if (RENDER_SCREENSHOTS):
     # On OS X antialiasing currently is disabled in WebGL
     # -> fake antialias by rendering to 4* Canvas and bicubic resampling
     aaFactor = 1;
-    if sys.platform.startswith('darwin'):
-        aaFactor = 4;
+#    if sys.platform.startswith('darwin'):
+#        aaFactor = 4;
 
     for file in os.listdir(examplesDir):
         if file.endswith(".js"):

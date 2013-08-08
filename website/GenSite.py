@@ -17,7 +17,7 @@ def render_template(tname, ctx):
 
 def write_html(oname, outstr):
     with open("out/" + oname, "wb") as fh:
-        fh.write(outstr)
+        fh.write(outstr.encode('utf8'))
 
 
 def render_template_to_out(tname, oname, ctx):
@@ -89,7 +89,8 @@ content = md_to_html('learn.md')
 outstr = render_template('learn.html',
                          {'content': content, 'nentries': navbarEntries, 'nactive': 2, 'title': 'Learn'})
 
-outstr = outstr.replace('<pre>', '<pre class="prettyprint lang-js">')
+outstr = outstr.replace('<pre><code>:::js:::', '<pre class="prettyprint linenums lang-js"><code>')
+outstr = outstr.replace('<pre><code>:::html:::', '<pre class="prettyprint linenums lang-html"><code>')
 write_html('learn.html', outstr)
 
 ende = time.time()

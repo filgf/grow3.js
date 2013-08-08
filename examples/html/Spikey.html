@@ -29,13 +29,13 @@ source = function (grow3) {
     with (grow3) {
         background(0x443333);
 
-        var mat1 = new THREE.MeshPhongMaterial({color: 0xbbbbbb});
-        var mat2 = new THREE.MeshPhongMaterial({color: 0xddbbbb});
+        var materials = [new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
+                    new THREE.MeshPhongMaterial({color: 0xddbbbb})];
 
         maxDepth(100);
 
         grow3.spiral = rule(function () {
-            cube(material(mat1).scale(1.2));
+            cube(material(materials).scale(1.2));
             spiral(pitch(-10).roll(13).move(0.6).scale(0.98));
         });
 

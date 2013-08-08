@@ -58,7 +58,7 @@ grow3.Runner = (function() {
 
 
         // GROW3
-        this.g = new grow3.System(this.scene, script, this.camera);
+        this.g = new grow3.System(this.scene, this.camera, script);
         this.g.build();
 
         if(!this.g.hasLighting) {

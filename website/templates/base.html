@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% if title is defined %} {{ title }} &ndash; {% endif %}Grow3.js</title>
+    <title>{% if title is defined %} {{ title }} &ndash; {% endif %}grow3.js</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
     {% block head %}{% endblock %}
@@ -11,7 +11,7 @@
 <div class="container">
     <div class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="index.html">Grow3.js</a>
+            <a class="brand" href="index.html">grow3.js</a>
             <ul class="nav">{% for nentry in nentries %}<li{% if nactive is sameas loop.index0 %} class="active"{% endif %}><a href="{{nentry.url}}">{{nentry.name}}</a></li>{% endfor %}</ul>
         </div>
     </div>

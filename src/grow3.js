@@ -35,7 +35,7 @@ grow3.System = (function() {
     var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
     var sphereGeometry = new THREE.SphereGeometry(0.5, 32, 16);
 
-    var system = function(scene, script /* optional */, camera /* optional */) {
+    var system = function(scene, camera /* optional */, script /* optional */) {
         this.scene = scene;
         this.script = script;
 
@@ -149,6 +149,7 @@ grow3.System = (function() {
 
         } while (this.backlogBuild.length > 0);
 
+        return rootNode;
     };
 
 
