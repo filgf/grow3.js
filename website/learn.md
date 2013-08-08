@@ -21,23 +21,34 @@ The easiest way to build and view structures with grow3.js ist using `grow3.Runn
 runner, evaluation of a script ist started by calling `run()`.
 
 The runner is provided with a script, which is an ordinary JavaScript-function *(lines 2-8)*. Its main task is to
-define a set of recursive rules that describe how to construct the object *(lines 4-6)*. In this case there is only
-the `start` rule that is the starting point of the evaluation. It calls one built-in rule (`cube()`) and that's all.
+define a set of recursive rules that describe how to construct the object *(lines 4-6)*.
+
+The function takes one argument: A reference to a grow3.System object that contains all functions (evaluation, helpers,
+builtin rules and modifiers) for working with a grow3.js system.
+
+In this case there is only the `start` rule that is the starting point of the evaluation. It calls one built-in rule
+(`cube()`) and that's all.
 
 
 ## Basics
 
 #### Rules and Modifiers
 
-Every Grow3 script consists of a set of **rules** that can be called as functions from other rules. There are a few buitin rules (such as `cube()` in the example above) that are the basic building blocks for every structure. Every rule has a name and an implementation which mostly consists of rule calls (and modifiers - see below) but is just plain JavaScript.
+Every Grow3 script consists of a set of **rules** that can be called as functions from other rules. There are a few
+buitin rules (such as `cube()` in the example above) that are the basic building blocks for every structure. Every rule
+has a name and an implementation which mostly consists of rule calls (and modifiers - see below) but is just plain
+JavaScript.
 
-Every rule is influenced by grow3's **state** when it is run. The state includes the local coordinate system (rotation and scaling), materials to apply and other data that influences the outcome of a rule based on the time it's run.
+Every rule is influenced by grow3's **state** when it is run. The state includes the local coordinate system (rotation
+and scaling), materials to apply and other data that influences the outcome of a rule based on the time it's run.
 
-The state for a rule can be manipulated using **modifiers**. Modifiers can be placed inside the rule call arguments fora rule or be called prior to calling a rule.
+The state for a rule can be manipulated using **modifiers**. Modifiers can be placed inside the rule call arguments for
+a rule or be called prior to calling a rule.
 
 #### Rule Evaluation
 
-Grow3 evaluates rules recursively. This means that often rules contain a call to themselves (or to another rule that calls the original rule again). Recursion is evaluated using a breadth first approach.
+Grow3 evaluates rules recursively. This means that often rules contain a call to themselves (or to another rule that
+calls the original rule again). Recursion is evaluated using a breadth first approach.
 
 The maximum recursion depth is limited to a call depth of 20. This value can be changed using the method `maxDepth(n)`.
 
@@ -200,16 +211,104 @@ Calling `g.build()` triggers generating the structure and return a reference to 
 
 ## Rules
 
+Every grow3.js script consists of a set of **rules** that can be called as functions from other rules. There exist some
+predefined rules that act as basic atomic building blocks for a rule set.
+
 ### Defining Rules
 
-### Randomly select a Rule
+One rule can be defined using the method `rule(function)` which takes a function as its argument.
+
+The function itself will be wrapped by grow3.js to be able to evaluate modifiers, but can have any number of additional
+arguments. By defining rules, the grow3.js object is extended with additional methods that allow controlled evaluation
+of the recursive calls.
+
+Example:
+
+    :::js:::var script = function(g) {
+        g.start = rule(function(){
+            cube();
+        });
+    };
+
+As usually more than one rule is defined you will usually use the short version `rules(map_name_function)` that takes
+an object as a basis for a complete rule set.
+
+Example:
+
+    :::js:::var script = function(g) {
+        with(g) {
+            rules({
+                segment : function() {
+                    segment(roll(10).move(1).scale(0.99));
+                    cube();
+                },
+                start : function() {
+                    segment();
+                }
+            });
+
+        }
+    };
+
+For more examples see the scripts above and pretty much all examples at in the [examples folder](https://github.com/filgf/grow3.js/tree/master/examples).
+
+### Randomly select a rule implementation
+
+Instead of supplying one function for a rule you can specify an array of functions:
+
+    :::js:::rules({
+        seg: [
+            function () {
+                cube(scale(0.5));
+                seg(move(2.0).pitch(-45));
+            },
+            function () {
+                cube(scale(0.5).material(mat1));
+                seg(yaw(90).pitch(45).move(1.0));
+            },
+            function () {
+                cube(scale(0.5).material(mat2));
+                seg(yaw(-90).move(1.0));
+            }
+        ],
+
+        start: function () {
+            for (var i = 0; i < 35; i++) {
+                seg();
+            }
+        }
+    });
+
+Whenever the rule `seg()` is triggered one of its three implementations is randomly selected (with equal probability).
+This realizes a simple form of polymorphism and introduces larger scale randomness into the constructed structures.
 
 ### Built-in Rules
-#### Mesh, Cube, Sphere, Glyphs
-#### Camera, Light
 
-### Limiting Recursion
+grow3.js currently has the following bultin rules to create meshes:
 
+* `cube()`: create a cube mesh with edge length 1.0, centered at (0,0,0).
+* `sphere()`: create a sphere mesh with diameter 1.0, centered at (0,0,0).
+* `mesh()`: create an arbitrary mesh using an arbitrary self defined THREE.js geometry. The
+[MeshRings example](https://github.com/filgf/grow3.js/blob/master/examples/html/MeshRings.html) shows how to use it.
+
+All positions/sizes are in local coordinates! To place and scale the meshes just use grow3's modifiers.
+
+Additionally there are two special builtin rules for placing and adding camera and lights:
+
+* `camera()` places the camera at the current position defined by the modifiers and is always facing towards the global
+coordinate systems origin (0,0,0). If no camera is defined in the script, `grow3.Runner` places a default camera at
+(-25, -10, 0).
+* `light(hex, intensity, distance)` adds a new point light at the current position. The parameters are the same as in
+the constructor for [THREE.PointLight](http://threejs.org/docs/59/#Reference/Lights/PointLight). If no lights are
+defined in the script, `grow3.Runner` places two default lights.
+
+### Limiting Recursion Depth
+
+The maximum depth at which recursion will be stopped can be set using the function `maxDepth()` (see example above). The
+default value is 20.
+
+If you need finer control (f.e. setting modifier parameters based on depth), the `grow3.System` object has an attribute
+called `depth` you can read.
 
 
 ## Modifiers
