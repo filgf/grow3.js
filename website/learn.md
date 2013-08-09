@@ -1,3 +1,7 @@
+## Contents
+
+[TOC]
+
 ## Hello grow3.js!
 
 A minimal code example for a simple silvery cube:
@@ -29,10 +33,12 @@ builtin rules and modifiers) for working with a grow3.js system.
 In this case there is only the `start` rule that is the starting point of the evaluation. It calls one built-in rule
 (`cube()`) and that's all.
 
+grow3.js is tightly coupled to THREE.js in that it creates a hierarchy of scene nodes for THREE.js.
+
 
 ## Basics
 
-#### Rules and Modifiers
+### Rules and Modifiers
 
 Every Grow3 script consists of a set of **rules** that can be called as functions from other rules. There are a few
 buitin rules (such as `cube()` in the example above) that are the basic building blocks for every structure. Every rule
@@ -45,7 +51,7 @@ and scaling), materials to apply and other data that influences the outcome of a
 The state for a rule can be manipulated using **modifiers**. Modifiers can be placed inside the rule call arguments for
 a rule or be called prior to calling a rule.
 
-#### Rule Evaluation
+### Rule Evaluation
 
 Grow3 evaluates rules recursively. This means that often rules contain a call to themselves (or to another rule that
 calls the original rule again). Recursion is evaluated using a breadth first approach.
@@ -53,12 +59,12 @@ calls the original rule again). Recursion is evaluated using a breadth first app
 The maximum recursion depth is limited to a call depth of 20. This value can be changed using the method `maxDepth(n)`.
 
 
-#### The Coordinate System
+### The Coordinate System
 
 In practice modifiers most commonly move, rotate and scale the local coordinate system. Movements follow the
-[turtle graphics](https://en.wikipedia.org/wiki/Turtle_graphics) principle: Think of it as a little person moving and rotating
-in 3D, who is also able to magically change its size (grow and shrink). Every action (rule call) will have its effect
-based on it position and size.
+[turtle graphics](https://en.wikipedia.org/wiki/Turtle_graphics) principle: Think of it as a little person moving and
+rotating in 3D, who is also able to magically change its size (grow and shrink). Every action (rule call) will have its
+effect based on it position and size.
 
 Modifiers can be...
 
@@ -71,8 +77,10 @@ Basic modifiers for changing the local coordinate system:
 **Move:**
 
 * `move(amount)` or `m(amount)`: Move forward *amount* units
-* `transHoriz(amount)` or `tH(amount)`: Move right *amount* units (based on local orientation). Use negative values to move left.
-* `transVert(amount)` or `tV(amount)`: Move down *amount* units (based on local orientation). Use negative values to move up.
+* `transHoriz(amount)` or `tH(amount)`: Move right *amount* units (based on local orientation). Use negative values to
+move left.
+* `transVert(amount)` or `tV(amount)`: Move down *amount* units (based on local orientation). Use negative values to
+move up.
 
 **Rotate:**
 
@@ -83,6 +91,9 @@ Basic modifiers for changing the local coordinate system:
 **Scale:**
 
 * `scale(factor)` or `s(factor)`: Scale by amount *factor*. Effectively this scales all following movements and meshes.
+
+
+
 
 ## A more interesting example!
 
@@ -129,8 +140,8 @@ The same basic structure as before, but there's much more happening (for details
 
 There are two rules (`start` and `spiral`). `spiral`
 gets called 720/15 = 48 times from within the loop in `start`, each call starting one "branch". The corkscrew-type
-branches are built from cubes by recursive calls to `spiral`, each with a changed and slightly scaled down local coordinate system
-*(line 15)*.
+branches are built from cubes by recursive calls to `spiral`, each with a changed and slightly scaled down local
+coordinate system *(line 15)*.
 
 The maximum recursion depth is set to 100 in the script with the helper function `maxDepth()` *(line 10)*. The default
 value is 20.
@@ -141,19 +152,21 @@ The camera can be set as a special node in our scene using the camera rule *(lin
 current position defined by the modifiers and always facing towards the global coordinate systems origin (0,0,0).
 
 Finally, you can use the THREE.js material system, using the `material()` modifier *(line 14)*. It takes as its argument
-any material. If you supply it with an *array* of possible values insted, grow3.js automatically selects one based on the
-current recursion depth. Here this results in a subtle grey-red stripe effect.
+any material. If you supply it with an *array* of possible values insted, grow3.js automatically selects one based on
+the current recursion depth. Here this results in a subtle grey-red stripe effect.
 
 
 ## Embedding grow3
 
 ### ...in a web page
 
-To build a webpage containing a grow3-script import [`grow3.min.js`]{https://github.com/filgf/grow3.js/blob/master/build/grow3.min.js},
-the minified library. For debugging directly include `grow3.js` and `grow3.Runner.js` from the
+To build a webpage containing a grow3-script import
+[`grow3.min.js`]{https://github.com/filgf/grow3.js/blob/master/build/grow3.min.js}, the minified library. For debugging
+directly include `grow3.js` and `grow3.Runner.js` from the
 [source code]{https://github.com/filgf/grow3.js/tree/master/src}.
 
-grow3.js has a few dependencies (see [src/lib](https://github.com/filgf/grow3.js/tree/master/src/lib) or original sources):
+grow3.js has a few dependencies (see [src/lib](https://github.com/filgf/grow3.js/tree/master/src/lib) or original
+sources):
 
 * Always: `three.js`
 * If you use grow3.Runner as your framework: `Detector.js`, `TrackballControls.js`, `THREEx.FullScreen.js`,
@@ -191,7 +204,8 @@ A basic stub could look like this:
 
 ### ...as an object generator for THREE.js
 
-You can use grow3.js as an object generator for your own THREE.js application, without using grow3.Runner.js as a framework.
+You can use grow3.js as an object generator for your own THREE.js application, without using grow3.Runner.js as a
+framework.
 
 The API is pretty straightforward:
 
@@ -203,10 +217,20 @@ The API is pretty straightforward:
 
     var root = g.build();
 
-Giving a reference to the THREE.js scene is mandatory. Supplying a camera object in the constructor is optional. If given, it's possible to set the camera using the `camera()`
-rule.
+Giving a reference to the THREE.js scene is mandatory. Supplying a camera object in the constructor is optional. If
+given, it's possible to set the camera using the `camera()` rule.
 
 Calling `g.build()` triggers generating the structure and return a reference to its root node.
+
+### How it Actually Works
+
+The central hub of grow3.js is an object from the `grow3.System` prototype. It contains all rules (predefined or added
+through the `rules()` method), modifiers and helper functions. To be able to access them without prepending the object
+name (f.e. `g.` in the example before), I recommend to surround your actual script with `with(g) {...}'.
+
+The `build()` function starts the evaluation of the script. As the `rule()` method wraps each rule it is possible to
+intercept each recursive call and put it in a backlist to ensure are breadth first evaluation strategy and manage
+*state* information.
 
 
 ## Rules
@@ -250,7 +274,8 @@ Example:
         }
     };
 
-For more examples see the scripts above and pretty much all examples at in the [examples folder](https://github.com/filgf/grow3.js/tree/master/examples).
+For more examples see the scripts above and pretty much all examples at in the
+[examples folder](https://github.com/filgf/grow3.js/tree/master/examples).
 
 ### Randomly select a rule implementation
 
@@ -286,9 +311,11 @@ This realizes a simple form of polymorphism and introduces larger scale randomne
 
 grow3.js currently has the following bultin rules to create meshes:
 
-* `cube()`: create a cube mesh with edge length 1.0, centered at (0,0,0).
-* `sphere()`: create a sphere mesh with diameter 1.0, centered at (0,0,0).
-* `mesh()`: create an arbitrary mesh using an arbitrary self defined THREE.js geometry. The
+* `cube()` creates a cube mesh with edge length 1.0, centered at (0,0,0).
+* `sphere()`: creates a sphere mesh with diameter 1.0, centered at (0,0,0).
+* `glyphs(string)`: creates a text mesh from a string, centered at (0,0,0). The appearance can be influenced with the
+`textParams` modifier (see below).
+* `mesh(geometry)`: creates an arbitrary mesh using an arbitrary self defined THREE.js geometry. The
 [MeshRings example](https://github.com/filgf/grow3.js/blob/master/examples/html/MeshRings.html) shows how to use it.
 
 All positions/sizes are in local coordinates! To place and scale the meshes just use grow3's modifiers.
@@ -310,35 +337,75 @@ default value is 20.
 If you need finer control (f.e. setting modifier parameters based on depth), the `grow3.System` object has an attribute
 called `depth` you can read.
 
+### Arrays as Rule Arguments
+
+When a rule allows arguments (f.e. `glyphs()`) or a script defined one and an array is supplied instead of a value, one
+value will be selected based on the current recursion depth.
+
+The [TextWorld example](https://github.com/filgf/grow3.js/blob/master/examples/html/TextWorld.html) uses this to
+generate a twisty path built from single letters of a string.
 
 ## Modifiers
 
-### The Coordinate System
+Every rule is influenced by grow3's **state** when it is run. The state includes the local coordinate system (rotation
+and scaling), materials to apply and other data that influences the outcome of a rule based on the time it's run.
+
+The state for a rule can be manipulated using **modifiers**. Modifiers can be placed inside the rule call arguments for
+a rule or be called prior to calling a rule.
 
 ### Supported Modifiers
-#### Rotating: Pitch, Roll, Yaw
-#### Moving: Move, TranslateH, TranslateV
-#### Scaling
-#### Material
+
+**Move:**
+
+* `move(amount)` or `m(amount)`: Move forward *amount* units
+* `transHoriz(amount)` or `tH(amount)`: Move right *amount* units (based on local orientation). Use negative values to
+move left.
+* `transVert(amount)` or `tV(amount)`: Move down *amount* units (based on local orientation). Use negative values to
+move up.
+
+**Rotate:**
+
+* `roll(amount)` or `rX(amount)`: Rotate along viewing direction (around local X-axis) for *amount* degrees (= *roll*).
+* `yaw(amount)` or `rY(amount)`: Rotate "right" (around local Y-axis) for *amount* degrees (= *yaw*).
+* `pitch(amount)` or `rZ(amount)`: Rotate "up" (around local Z-axis) for *amount* degrees (= *pitch*).
+
+**Scale:**
+
+* `scale(factor)` or `s(factor)`: Scale by amount *factor*. Effectively this scales all following movements and meshes.
+
+**Others:**
+
+* `material(mat)`: Set material for every mesh constructing rule. Any
+[THREE.js material](http://threejs.org/docs/59/#Reference/Materials/Material) can be used.
+* `textParam(par)`: Control the appearance of the text renderer with the glyphs() rule. `par` is an object that can
+contain all attributes described in THREE.js docs for
+[TextGeometry](http://threejs.org/docs/59/#Reference/Extras.Geometries/TextGeometry).
+
 
 ### Arrays as Modifier Arguments
 
+Like with rules, you can use arrays instead of values as parameter values for modifiers. One
+value will be selected based on the current recursion depth at the time the modifier function is called.
+
+The example in the beginning uses this technique to change material based on recursion depth.
 
 
 ## Helpers
 
-### Background Color
+grow3.js includes a few helper functions and objects:
 
-### Random Values and Selection
+**`grow3.Runner`** is a micro framework to render and view grow3 scripts. The basic usage pattern is shown in all examples
+in this documentation:
 
-### Grow3Runner
+     :::js:::var runner = new grow3.Runner(parent_dom_element);
+     runner.run(script_function);
 
+When using `grow3.Runner` the function `background(rgb)` sets the background color of the canvas. `rgb` is a hexadecimal
+color value in the form `0xRRGGBB`.
 
+**`rnd()`** is a multifunctional random value function:
 
-## Leveraging Three.js
+* `rnd(value)` returns a random number between -value and +value.
+* `rnd(min, max)` returns a random number between min and max.
+* `rnd(array)` returns a random entry from the given array.
 
-### Materials
-
-
-
-## Cheat Sheet

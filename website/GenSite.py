@@ -29,7 +29,7 @@ def render_template_to_out(tname, oname, ctx):
 def md_to_html(mdFile):
     input_file = codecs.open(mdFile, mode="r", encoding="utf-8")
     text = input_file.read()
-    content = markdown.markdown(text, extensions=['extra'])
+    content = markdown.markdown(text, extensions=['extra', 'toc'])
     #    print content
     return content
 
