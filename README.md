@@ -9,7 +9,7 @@ Check out the [example gallery](http://grow3.zyxxy.de/gallery.html)!
 
 Based on THREE.js (Prefers a WebGL enabled browser, i.e. Chrome or Firefox)
 
-Documentation can be found [here](http://grow3.zyxxy.de/gallery.html).
+Documentation can be found [here](http://grow3.zyxxy.de/learn.html).
 
 For a minimal template see [here](examples/HelloGrow3.html).
 
