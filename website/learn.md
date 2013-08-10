@@ -99,7 +99,7 @@ move up.
 
 To create this...
 
-![Spikey Screenshot](screenshots/Spikey.png)
+![Spikey Screenshot](screenshots/004_Spikey.png)
 
 ...you will need the following code:
 
@@ -316,7 +316,7 @@ grow3.js currently has the following bultin rules to create meshes:
 * `glyphs(string)`: creates a text mesh from a string, centered at (0,0,0). The appearance can be influenced with the
 `textParams` modifier (see below).
 * `mesh(geometry)`: creates an arbitrary mesh using an arbitrary self defined THREE.js geometry. The
-[MeshRings example](https://github.com/filgf/grow3.js/blob/master/examples/html/MeshRings.html) shows how to use it.
+[MeshRings example](https://github.com/filgf/grow3.js/blob/master/examples/html/001_MeshRings.html) shows how to use it.
 
 All positions/sizes are in local coordinates! To place and scale the meshes just use grow3's modifiers.
 
@@ -342,7 +342,7 @@ called `depth` you can read.
 When a rule allows arguments (f.e. `glyphs()`) or a script defined one and an array is supplied instead of a value, one
 value will be selected based on the current recursion depth.
 
-The [TextWorld example](https://github.com/filgf/grow3.js/blob/master/examples/html/TextWorld.html) uses this to
+The [TextWorld example](https://github.com/filgf/grow3.js/blob/master/examples/html/006_TextWorld.html) uses this to
 generate a twisty path built from single letters of a string.
 
 ## Modifiers

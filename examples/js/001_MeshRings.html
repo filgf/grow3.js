@@ -14,40 +14,10 @@
         <script src="../../src/grow3.js"></script>
         <script src="../../src/grow3.Runner.js"></script>
 
+        <script src="../js/001_MeshRings.js"></script>
 
         <script>
             document.title = (name || "")  + " [grow3.js]"
-
-            name = "Spikey";
-
-author = "FilGf";
-
-date = "2013-04-20";
-
-source = function (grow3) {
-
-    with (grow3) {
-        background(0x443333);
-
-        var materials = [new THREE.MeshPhongMaterial({color: 0xbbbbbb}),
-                    new THREE.MeshPhongMaterial({color: 0xddbbbb})];
-
-        maxDepth(100);
-
-        grow3.spiral = rule(function () {
-            cube(material(materials).scale(1.2));
-            spiral(pitch(-10).roll(13).move(0.6).scale(0.98));
-        });
-
-        grow3.start = rule(function () {
-            for (var i = 0; i < 720; i += 15) {
-                spiral(scale(0.9).yaw(i / 3).pitch(i));
-            }
-        });
-    }
-
-};
-
             window.onload = function() {
                 var runner = new grow3.Runner(document.body);
                 runner.run(source);

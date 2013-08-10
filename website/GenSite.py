@@ -77,7 +77,10 @@ for jsfile in os.listdir(examplesDir):
         render_template_to_out('gallery_entry.html', 'g_' + nameBase + '.html',
                                {'example': nameBase, 'jsContent': jsContent, 'title': nameBase})
 
+gentries = sorted(gentries, reverse=True)
+
 print gentries
+
 
 # build gallery overview
 render_template_to_out('gallery.html', 'gallery.html',
