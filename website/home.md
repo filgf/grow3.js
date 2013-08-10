@@ -1,6 +1,6 @@
 ### What is it?
 
-Grow3.js is a recursive object generator for JavaScript. You can use its API to define rules that build nice three
+Grow3.js is a recursive 3D object generator for JavaScript. You can use its API to define rules that build nice three
 dimensional structures.
 
 **Main features:**
@@ -8,7 +8,7 @@ dimensional structures.
 * Intuitive set of movements, rotations and scales.
 * Integrated basic building blocks: *cubes*, *spheres*, *text* and arbitrary *meshes*.
 * Rich set of helper functions.
-* Based on [THREE.js](http://threejs.org/ "THREE.js"). Easy to integrate materials and other features.
+* Based on [THREE.js](http://threejs.org/ "THREE.js") and [WebGL](http://get.webgl.org). Easy to integrate materials and other features.
 * Integrated positioning of camera and lights.
 * Created objects can be viewed using `grow3.Runner`
 

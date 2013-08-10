@@ -397,8 +397,8 @@ grow3.js includes a few helper functions and objects:
 **`grow3.Runner`** is a micro framework to render and view grow3 scripts. The basic usage pattern is shown in all examples
 in this documentation:
 
-     :::js:::var runner = new grow3.Runner(parent_dom_element);
-     runner.run(script_function);
+    :::js:::var runner = new grow3.Runner(parent_dom_element);
+    runner.run(script_function);
 
 When using `grow3.Runner` the function `background(rgb)` sets the background color of the canvas. `rgb` is a hexadecimal
 color value in the form `0xRRGGBB`.
