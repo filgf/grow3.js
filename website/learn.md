@@ -161,9 +161,9 @@ the current recursion depth. Here this results in a subtle grey-red stripe effec
 ### ...in a web page
 
 To build a webpage containing a grow3-script import
-[`grow3.min.js`]{https://github.com/filgf/grow3.js/blob/master/build/grow3.min.js}, the minified library. For debugging
+[`grow3.min.js`](https://github.com/filgf/grow3.js/blob/master/build/grow3.min.js), the minified library. For debugging
 directly include `grow3.js` and `grow3.Runner.js` from the
-[source code]{https://github.com/filgf/grow3.js/tree/master/src}.
+[source code](https://github.com/filgf/grow3.js/tree/master/src).
 
 grow3.js has a few dependencies (see [src/lib](https://github.com/filgf/grow3.js/tree/master/src/lib) or original
 sources):
