@@ -84,5 +84,5 @@ if (RENDER_SCREENSHOTS):
             openChrome(filename)
             time.sleep(5)
 
-
+    time.sleep(20)
 

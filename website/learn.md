@@ -372,6 +372,9 @@ move up.
 **Scale:**
 
 * `scale(factor)` or `s(factor)`: Scale by amount *factor*. Effectively this scales all following movements and meshes.
+* `scale(factorX, factorY, factorZ)` or `s(factorX, factorY, factorZ)`: Scale different local axis independently. Great
+for scaling primitives (f.e. cubes to cuboids). Remember: X-direction is always "forward".
+
 
 **Others:**
 

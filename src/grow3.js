@@ -275,7 +275,13 @@ grow3.System = (function() {
 
     system.prototype.buildModifier = function(fun) {
         return function(param) {
-            fun.call(this, this.handleParameter(param));
+            var argsH = new Array();
+
+            for (var i=0; i<arguments.length; i++) {
+                argsH[i] = this.handleParameter(arguments[i]);
+            }
+
+            fun.apply(this, argsH);
             return this;
         };
     };
@@ -314,8 +320,12 @@ grow3.System = (function() {
     /*
      * Change scale by factor amount
      */
-    system.prototype.scale = buildModifier(function(amount) {
-        trafo4.makeScale(amount, amount, amount);
+    system.prototype.scale = buildModifier(function(amount1, amount2, amount3) {
+        if (!(amount2 === undefined)&&(!(amount3 == undefined))) {
+            trafo4.makeScale(amount1, amount2, amount3);
+        } else {
+            trafo4.makeScale(amount1, amount1, amount1);
+        }
         this.state.objectProto.matrix.multiplyMatrices(trafo4, this.state.objectProto.matrix);
 //        this.state.objectProto.scale.multiplyScalar(amount);
     });
