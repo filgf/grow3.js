@@ -59,7 +59,10 @@ grow3.Runner = (function() {
 
         // GROW3
         this.g = new grow3.System(this.scene, this.camera, script);
+        var start = (new Date).getTime();
         this.g.build();
+        var diff = (new Date).getTime() - start;
+        console.debug("Building time: " + diff + "ms");
 
         if(!this.g.hasLighting) {
             // default lighting
