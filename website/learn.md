@@ -22,12 +22,12 @@ A minimal code example for a simple silvery cube:
     </script>
 
 The easiest way to build and view structures with grow3.js ist using `grow3.Runner` *(lines 11-12)*: After creating the
-runner, evaluation of a script ist started by calling `run()`.
+runner, evaluation of a script is started by calling `run()`.
 
 The runner is provided with a script, which is an ordinary JavaScript-function *(lines 2-8)*. Its main task is to
 define a set of recursive rules that describe how to construct the object *(lines 4-6)*.
 
-The function takes one argument: A reference to a grow3.System object that contains all functions (evaluation, helpers,
+The function takes one argument: A reference to a grow3.System object that contains all methods (evaluation, helpers,
 builtin rules and modifiers) for working with a grow3.js system.
 
 In this case there is only the `start` rule that is the starting point of the evaluation. It calls one built-in rule
@@ -40,13 +40,14 @@ grow3.js is tightly coupled to THREE.js in that it creates a hierarchy of scene 
 
 ### Rules and Modifiers
 
-Every Grow3 script consists of a set of **rules** that can be called as functions from other rules. There are a few
+Every grow3.js script consists of a set of **rules** that can be called as functions from other rules. There are a few
 buitin rules (such as `cube()` in the example above) that are the basic building blocks for every structure. Every rule
-has a name and an implementation which mostly consists of rule calls (and modifiers - see below) but is just plain
+has a name and an implementation that mainly consists of rule calls (and modifiers - see below) but is just plain
 JavaScript.
 
-Every rule is influenced by grow3's **state** when it is run. The state includes the local coordinate system (rotation
-and scaling), materials to apply and other data that influences the outcome of a rule based on the time it's run.
+Every rule is influenced by grow3.js's **state** when it is run. The state includes the local coordinate system
+(rotation and scaling), materials to apply and other data that influences the outcome of a rule based on the time it is
+run.
 
 The state for a rule can be manipulated using **modifiers**. Modifiers can be placed inside the rule call arguments for
 a rule or be called prior to calling a rule.
@@ -151,9 +152,9 @@ The helper `background()` sets a background color *(line 4)*.
 The camera can be set as a special node in our scene using the camera rule *(line 18)*: The camera is placed at the
 current position defined by the modifiers and always facing towards the global coordinate systems origin (0,0,0).
 
-Finally, you can use the THREE.js material system, using the `material()` modifier *(line 14)*. It takes as its argument
-any material. If you supply it with an *array* of possible values insted, grow3.js automatically selects one based on
-the current recursion depth. Here this results in a subtle grey-red stripe effect.
+Finally, you can use the THREE.js material system, using the `material()` modifier *(line 14)*. It takes any material
+as its argument. If you supply it with an *array* of possible values instead, grow3.js automatically selects one based
+on the current recursion depth. In this example this gives a subtle grey-red stripe effect.
 
 
 ## Embedding grow3
@@ -218,19 +219,20 @@ The API is pretty straightforward:
     var root = g.build();
 
 Giving a reference to the THREE.js scene is mandatory. Supplying a camera object in the constructor is optional. If
-given, it's possible to set the camera using the `camera()` rule.
+given, it is possible to set the camera using the `camera()` rule.
 
-Calling `g.build()` triggers generating the structure and return a reference to its root node.
+Calling `g.build()` triggers generating the structure and returns a reference to its root node.
 
 ### How it Actually Works
 
-The central hub of grow3.js is an object from the `grow3.System` prototype. It contains all rules (predefined or added
-through the `rules()` method), modifiers and helper functions. To be able to access them without prepending the object
-name (f.e. `g.` in the example before), I recommend to surround your actual script with `with(g) {...}'.
+The central hub of grow3.js is an object instantiated from the `grow3.System` prototype. It contains all rules
+(predefined or added through the `rules()` method), modifiers and helper functions. To be able to access them without
+prepending the object name (f.e. `g.` in the example before), I recommend to surround your actual script with
+`with(g) {...}`.
 
-The `build()` function starts the evaluation of the script. As the `rule()` method wraps each rule it is possible to
-intercept each recursive call and put it in a backlist to ensure are breadth first evaluation strategy and manage
-*state* information.
+The `build()` function starts the evaluation of the script. As the `rule()` method wraps each rule, it is possible to
+intercept each recursive call and put it in a backlist to ensure breadth first evaluation strategy and manage
+state information.
 
 
 ## Rules
@@ -240,7 +242,7 @@ predefined rules that act as basic atomic building blocks for a rule set.
 
 ### Defining Rules
 
-One rule can be defined using the method `rule(function)` which takes a function as its argument.
+A rule can be defined using the method `rule(function)` that takes a function as its argument.
 
 The function itself will be wrapped by grow3.js to be able to evaluate modifiers, but can have any number of additional
 arguments. By defining rules, the grow3.js object is extended with additional methods that allow controlled evaluation
@@ -254,8 +256,8 @@ Example:
         });
     };
 
-As usually more than one rule is defined you will usually use the short version `rules(map_name_function)` that takes
-an object as a basis for a complete rule set.
+As usually more than one rule is defined you can use the short version `rules(map_name_function)` that takes
+an object to construct a complete rule set.
 
 Example:
 
@@ -274,7 +276,7 @@ Example:
         }
     };
 
-For more examples see the scripts above and pretty much all examples at in the
+For more examples see the scripts above and pretty much all examples in the
 [examples folder](https://github.com/filgf/grow3.js/tree/master/examples).
 
 ### Randomly select a rule implementation
@@ -305,7 +307,7 @@ Instead of supplying one function for a rule you can specify an array of functio
     });
 
 Whenever the rule `seg()` is triggered one of its three implementations is randomly selected (with equal probability).
-This realizes a simple form of polymorphism and introduces larger scale randomness into the constructed structures.
+This realizes a simple form of polymorphism and introduces larger scale randomness for the constructed structures.
 
 ### Built-in Rules
 
@@ -331,15 +333,15 @@ defined in the script, `grow3.Runner` places two default lights.
 
 ### Limiting Recursion Depth
 
-The maximum depth at which recursion will be stopped can be set using the function `maxDepth()` (see example above). The
-default value is 20.
+The maximum depth at which recursion will be stopped can be set using the function `maxDepth()` (see example above).
+Default value is 20.
 
 If you need finer control (f.e. setting modifier parameters based on depth), the `grow3.System` object has an attribute
-called `depth` you can read.
+called `depth` you can read and evaluate.
 
 ### Arrays as Rule Arguments
 
-When a rule allows arguments (f.e. `glyphs()`) or a script defined one and an array is supplied instead of a value, one
+When a rule allows arguments (f.e. `glyphs()` or a script-defined one) and an array is supplied instead of a value, one
 value will be selected based on the current recursion depth.
 
 The [TextWorld example](https://github.com/filgf/grow3.js/blob/master/examples/html/006_TextWorld.html) uses this to
@@ -347,8 +349,8 @@ generate a twisty path built from single letters of a string.
 
 ## Modifiers
 
-Every rule is influenced by grow3's **state** when it is run. The state includes the local coordinate system (rotation
-and scaling), materials to apply and other data that influences the outcome of a rule based on the time it's run.
+Every rule is influenced by grow3.js's **state** when it is run. The state includes the local coordinate system (rotation
+and scaling), materials to apply and other data that influences the outcome of a rule based on the time it is run.
 
 The state for a rule can be manipulated using **modifiers**. Modifiers can be placed inside the rule call arguments for
 a rule or be called prior to calling a rule.
@@ -379,10 +381,10 @@ for scaling primitives (f.e. cubes to cuboids). Remember: X-direction is always 
 **Others:**
 
 * `material(mat)`: Set material for every mesh constructing rule. Any
-[THREE.js material](http://threejs.org/docs/59/#Reference/Materials/Material) can be used.
+[THREE.js material](http://threejs.org/docs/#Reference/Materials/Material) can be used.
 * `textParam(par)`: Control the appearance of the text renderer with the glyphs() rule. `par` is an object that can
 contain all attributes described in THREE.js docs for
-[TextGeometry](http://threejs.org/docs/59/#Reference/Extras.Geometries/TextGeometry).
+[TextGeometry](http://threejs.org/docs/#Reference/Extras.Geometries/TextGeometry).
 
 
 ### Arrays as Modifier Arguments

@@ -5,13 +5,11 @@ dimensional structures.
 
 **Main features:**
 
-* Intuitive set of movements, rotations and scales.
 * Integrated basic building blocks: *cubes*, *spheres*, *text* and arbitrary *meshes*.
-* Rich set of helper functions.
-* Based on [THREE.js](http://threejs.org/ "THREE.js") and [WebGL](http://get.webgl.org). Easy to integrate materials and other features.
+* Intuitive set of movements, rotations and scales.
+* Helper functions and micro-framework for viewing
 * Integrated positioning of camera and lights.
-* Created objects can be viewed using `grow3.Runner`
-
+* Based on [THREE.js](http://threejs.org/ "THREE.js") and [WebGL](http://get.webgl.org). Easy to integrate materials and other features.
 
 ### Get Support and Contribute
 
