@@ -1,0 +1,66 @@
+name = "DNA";
+
+author = "zbbfufu";
+
+date = "2013-09-10";
+
+source = function (grow) {
+
+	with(grow) {
+
+		background(0x5c1e82);
+
+		var adn_lenght = 30;
+		var adn_radius = 3;
+		var level_rotate = 25;
+		var level_inter = 1;
+		
+		var segments = level_inter*20;
+		var ribon_x = level_inter;
+		var ribon_y = level_inter;
+		var ribon_z = level_inter*0.01;
+		
+		//nucleotides
+		var nucl_radius = level_inter*0.4;
+
+		
+		var ribonMat = new THREE.MeshPhongMaterial({color: 0xffffff});
+		
+		var atgcMats = [
+			[ new THREE.MeshPhongMaterial({color: 0xff0000}), new THREE.MeshPhongMaterial({color: 0x0000ff}) ], //RED and BLUE
+			[ new THREE.MeshPhongMaterial({color: 0x0000ff}), new THREE.MeshPhongMaterial({color: 0xff0000}) ], //BLUE and RED
+			[ new THREE.MeshPhongMaterial({color: 0xffff00}), new THREE.MeshPhongMaterial({color: 0x00ff00}) ], //YELLOW and GREEN
+			[ new THREE.MeshPhongMaterial({color: 0x00ff00}), new THREE.MeshPhongMaterial({color: 0xffff00}) ]  //GREEN and YELLOW
+		];
+		
+		var nucleotide = function(rand, side) {
+		
+			sphere(material(atgcMats[rand][(side > 0 ? 0 : 1)]).scale(nucl_radius, nucl_radius, adn_radius).tV(side * adn_radius/2));
+			
+			for(var i=0; i<segments; i++){
+				cube(
+					material(ribonMat)
+					.scale(ribon_x, ribon_y/segments, ribon_z)
+					.tV(side * adn_radius)								// spread the "ribbon" on the outside of the DNA
+					.tH( ribon_y * ((i/segments)-0.5) )					// distribute the ribbons segments over the entire height of the level
+					.rY( level_rotate * ((i/segments)-0.5) )			// turn the ribbons segments to create the curve
+				);
+			}
+		}
+		
+		rules({
+			nextLevel : function() {
+				var randATGC = Math.round(Math.random()*3);
+				nucleotide(randATGC, 1);
+				nucleotide(randATGC, -1);
+				nextLevel(rY(level_rotate).tH(level_inter));
+			},
+			start : function() {
+				tH(-adn_lenght/2);
+				nextLevel();
+			}
+		});
+		
+		maxDepth(adn_lenght);
+	}
+}
