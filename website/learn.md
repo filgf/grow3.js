@@ -21,7 +21,7 @@ A minimal code example for a simple silvery cube:
         };
     </script>
 
-The easiest way to build and view structures with grow3.js ist using `grow3.Runner` *(lines 11-12)*: After creating the
+The easiest way to build and view structures with grow3.js is using `grow3.Runner` *(lines 11-12)*: After creating the
 runner, evaluation of a script is started by calling `run()`.
 
 The runner is provided with a script, which is an ordinary JavaScript-function *(lines 2-8)*. Its main task is to
