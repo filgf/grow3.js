@@ -8,6 +8,7 @@ from xml.dom import minidom
 from jinja2 import Environment, FileSystemLoader
 
 RENDER_SCREENSHOTS = True
+RENDER_ALL = False
 
 #Jinja2 Helpers
 jinja2_env = Environment(loader=FileSystemLoader('templates/'))
@@ -76,13 +77,18 @@ if (RENDER_SCREENSHOTS):
     for file in os.listdir(examplesDir):
         if file.endswith(".js"):
             nameBase = os.path.splitext(file)[0]
-            print "Screenshot " + nameBase + ".html..."
-            filename = 'screenshot'+ nameBase + '.html'
-            render('screenshot_template.html', { 'example' : nameBase, 'file' : file, 'width' : WIDTH, 'height' : HEIGHT, 'aaFactor' : aaFactor }, filename)
 
-            print "Open in browser " + filename
-            openChrome(filename)
-            time.sleep(5)
+            print "Screenshot " + nameBase + ".html..."
+
+            if not RENDER_ALL and os.path.exists("../examples/screenshots/" + nameBase + ".png"):
+                print "Pass " + nameBase + ".html"
+            else:
+                filename = 'screenshot'+ nameBase + '.html'
+                render('screenshot_template.html', { 'example' : nameBase, 'file' : file, 'width' : WIDTH, 'height' : HEIGHT, 'aaFactor' : aaFactor }, filename)
+
+                print "Open in browser " + filename
+                openChrome(filename)
+                time.sleep(5)
 
     time.sleep(20)
 
