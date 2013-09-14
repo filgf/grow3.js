@@ -1,4 +1,22 @@
-name = "DNA";
+<!doctype html>
+<html lang="en">
+    <head>
+        <style>body { margin: 0; overflow: hidden; }</style>
+    </head>
+    <body>
+        <script src="../../src/lib/three.js"></script>
+        <script src="../../src/lib/Detector.js"></script>
+        <script src="../../src/lib/TrackballControls.js"></script>
+        <script src="../../src/lib/THREEx.FullScreen.js"></script>
+        <script src="../../src/lib/THREEx.WindowResize.js"></script>
+        <script src="../../src/lib/helvetiker_regular.typeface.js"></script>
+
+        <script src="../../src/grow3.js"></script>
+        <script src="../../src/grow3.Runner.js"></script>
+
+
+        <script>
+            name = "DNA";
 
 author = "@zbbfufu";
 
@@ -65,3 +83,14 @@ source = function (grow) {
 		maxDepth(adn_lenght);
 	}
 }
+
+
+            document.title = (name || "")  + " [grow3.js]"
+
+            window.onload = function() {
+                var runner = new grow3.Runner(document.body);
+                runner.run(source);
+            };
+        </script>
+    </body>
+</html>

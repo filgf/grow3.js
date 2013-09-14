@@ -1,8 +1,3 @@
-This fork add a new exemple for grow3.js :
-
-![grow3.js Example Screenshot](/examples/screenshots/009_DNA.png)
-
-
 grow3.js
 ========
 
